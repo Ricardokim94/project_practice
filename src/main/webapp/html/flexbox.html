@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<style>
+.flex-container {
+	display : flex; 
+	/* flex-direction : row; */  /* 열방향으로 배치 */
+	/* flex-wrap : wrap-reverse; */ /* 가로폭에 따라 싸서 정렬해줌 */
+	flex-flow : row wrap; /* 둘다 동시에 주는것 */
+	background-color : dodgerBlue;
+									/* justify-content : space-around;  */
+									/* 주변에 space를 균등하게줌 */
+	justify-content : flex-start; 	/* 왼쪽오른쪽 붙으면서 사이가 space를 균등하게줌 */
+	align-items: baseline; /* =폰트사이즈대로정렬  */
+	align-content: space-between; /* =폰트사이즈대로정렬  */
+	height : 600px;
+}
+
+.flex-container > div{
+	background-color : #f1f1f1;
+	margin :10px 10px;
+	padding : 20px;
+	font-size :30px;
+	text-align: center;
+	width : 100px;
+	
+}
+</style>
+
+
+<body>
+
+<div class ="flex-container">
+	<div style = "font-size: 100px;">1</div>
+	<div style = "font-size : 50px;">2</div>
+	<div style = "font-size : 30px;">3</div>
+	<div>4</div>
+	<div>5</div>
+	<div>6</div>
+	<div>7</div>
+	<div>8</div>
+	<div>9</div>
+	<div>10</div> 
+</div>
+
+
+</body>
+</html>

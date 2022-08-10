@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="refresh" content="30">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+<title>Insert title here</title>
+</head>
+<body> 
+
+<script>
+	 var pic; //변수를 담음 pic에
+		 
+	  	function light(sw){	
+		 if( sw == 0){
+			pic = "https://www.w3schools.com/html/pic_bulboff.gif";
+		}
+		 else {
+			pic ="https://www.w3schools.com/html/pic_bulbon.gif";
+			}
+		 
+		 document.getElementById('img').src = pic;
+	  }
+</script>
+
+	<button type = "button" onclick="document.getElementById('demo').innerHTML ='반갑습니다'"> 오늘의 시간 </button>
+																		<!-- innerHTML를 반갑습니다로 바꾸란소리 -->
+	<button type = "button" onclick="document.getElementById('demo').style.fontSize ='30px'"> 글자크기변경 </button>
+	<button type = "button" onclick="document.getElementById('demo').style.color ='red'"> 글자색깔 </button>
+	<button type = "button" onclick="document.getElementById('demo').style.background ='skyblue'"> 배경색깔 </button>
+		<p id="demo">여기위치에</p>
+
+	<button type = "button" onclick="document.getElementById('img').src ='/project_kim/img/수달.png'"> 수달  </button>
+	<button type = "button" onclick="document.getElementById('img').style.height = '500px'"> 세로키우기  </button>
+	<button type = "button" onclick="document.getElementById('img').style.width = '100%'"> 가로키우기  </button>
+		<!--이 버튼을 누르는 순간 시간이 나온다!!  -->
+	<img id = "img"> <!-- 이미지 테그는 p테그 안된다 -->
+	
+	
+	<!--Inline 방식임 = 버튼은... ==줄바꿈이 안되고 옆에 붙음 -->
+	<button type="button" onclick ="light(0)"> turn_off</button>
+	<button type="button" onclick ="light(1)"> turn_on</button>
+	
+</body>
+			
+</html>
+

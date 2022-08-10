@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<style>
+
+	*{
+	margin : 0px;
+	}
+
+
+	div{
+		/* margin :20px; */
+		border :solid #5b6dcd 10px;
+		width : 100px; 	/* border가 양쪽을 10줬기때문에 120이다 */
+		height : 100px;
+		}
+	.box2{
+		border : solid #5b6dcd 10px;
+		padding : 20px;
+		width : 100px;
+		height : 100px;
+	}
+	.box3{
+		box-sizing: content-box;
+		/* content 는 padding 을 포함하지 않는다ㅏ*/
+		/* border 은 기준이 padding을 포함한다. 그래서 패딩이 
+			없으니까 사이즈가 작아진다.*/
+	}
+	.box4{
+		box-sizing: border-box;
+	}
+		
+</style>
+
+</head>
+
+
+<body>
+
+<div class = "box1">box1</div>
+<div class = "box2">box2</div>
+<div class = "box3">content-box</div>
+<div class = "box4">border-box</div>
+
+</body>
+</html>
+
+
+
+
+
+
+

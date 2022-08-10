@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name ="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel ="stylesheet" href="/project_kim/css/myweb.css">
+	<script src="https://kit.fontawesome.com/236f0b5985.js" crossorigin="anonymous"></script>
+	<script src="/project_kim/js/formCheck.js"></script>
+</head>
+
+
+
+<body>
+
+<div class="header">
+   <h1 style ="opacity :0.8 ">우당탕탕 우리동네</h1><br>
+  <h1 style ="opacity :0.8 ">수달이 세상</h1><br>
+  
+</div>
+
+<div class="topnav">
+	<i class="fa-solid fa-otter"></i>
+ 	<a href="/project_kim/">Home</a>
+  	<a href="http://localhost:8090/project_kim/ex.html">Join us</a>
+  	<a href="/project_kim/board/board.html">board</a>
+ 	<a id="login" href ="javascript:open1()">Login</a>
+</div>
+
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card">
+      <h2 style=>회원가입</h2>
+      <hr>
+	  <form name="memRegForm" method="post" action="memRegProc.html" onsubmit="return formCheck()">
+		  		<div class ="who">
+		  		아이디 :  &nbsp;&nbsp;<input type="text" placeholder="ID"maxlength="10" required name="id"><br>
+				비밀번호:<input type="password" placeholder="PW" maxlength="10" name="pw" required ><br>
+				이름 &nbsp;:&nbsp; &nbsp;<input type="text" placeholder="Name" name="name">
+				<span id ="msg" style= "background : pink"></span>
+			</div>	
+				<hr>
+			
+				<div class ="gender">
+				<h4>성별</h4>
+				<input type="radio" name="gender"><b>여자</b> <!--동그란버튼  -->
+				<input type="radio" name="gender"><b>남자 </b>
+			</div>
+				<hr>
+				
+				<div class ="hobby">
+				<fieldset style="width:50%;">
+				<legend><ins><strong>취미</strong></ins></legend>
+				<input type="checkbox" name="hobby"> 운동<!--여러개 선택-->
+				<input type="checkbox" name="hobby"> 음악
+				<input type="checkbox" name="hobby"> 미술
+				</fieldset>
+			</div>	
+				<hr>
+			
+				<div class="em">
+				<input type ="text" placeholder="e-mail" name="eid">@
+				<input type ="text" placeholder="domain" name="domain">	
+		  		<select name="selDomain" onchange ="inputDomain()">
+		  			<option value="">직접입력</option>
+		  			<option value="naver.com">naver.com</option>
+			  		<option value="daum.net">daum.net</option>
+			  		<option value="gmail.com">gmail.com</option>
+			  	</select>
+			  	</div><hr><br>
+		  	
+		  	<textarea rows="5" cols="50" placeholder ="자기소개(최대500자)" name="intro"></textarea>
+		  	
+		  	<input type="submit" value="회원등록">
+		  	<input type="reset" value="취소">
+	  	
+	  </form>
+    </div>
+    
+   </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <h2>Save the endangered otter</h2>
+      <!-- <div class="fakeimg" style="height:200px;">Image</div> -->
+      <img src ="/project_kim/img/기도.jpg">
+    </div>
+    <div class="card">
+      <h3>Popular Post</h3>
+      <div class="fakeimg"><p>Image</p></div>
+      <div class="fakeimg"><p>Image</p></div>
+      <div class="fakeimg"><p>Image</p></div>
+    </div>
+    <div class="card">
+      <h3>Follow Me</h3>
+      <p>Some text..</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <h2>Footer</h2>
+</div>
+
+<!-- 로그인창 만들기  -->
+<div id ="modal">
+	<div class ="modal-content">
+	<form>
+		<input type="text"  placeholder="Id"><br>
+		<input type="text" placeholder="PW"><br><br>
+		<input type="submit" value="login">
+	</form>
+		<p>&nbsp;<a href ="/project_kim/member/memRegForm.html"> [sign up] |</a>  
+				 <a href ="#"> [find pw] |</a> 
+				 <a href="javascript:clo()" >[Close]</a>		
+		</p>	
+	<!-- <button class ="bp" >sign in</button>
+	<button class ="bp" >sign up</button> -->
+	</div>
+</div>
+
+
+<!--로그인창 스크립트 -->
+<script>
+	function open1(){
+		document.getElementById("modal").style.display ="block";
+		}
+	function clo(){
+		document.getElementById("modal").style.display ="none";
+		}
+	</script>		
+
+
+
+</body>
+</html>

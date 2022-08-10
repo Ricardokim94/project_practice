@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name ="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel ="stylesheet" href="/project_kim/css/myweb.css">
+	<script src="https://kit.fontawesome.com/236f0b5985.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="header">
+  <h1 style ="opacity :0.8 ">우당탕탕 우리동네</h1><br>
+  <h1 style ="opacity :0.8 ">수달이 세상</h1><br>
+</div>
+
+
+
+
+<div class="topnav">
+ 	<i class="fa-solid fa-otter"></i>
+ 	<a href="/project_kim/">Home</a>
+  	<a href="http://localhost:8090/project_kim/ex.html">Join us</a>
+  	<a href="/project_kim/board/board.html">board</a>
+ 	<a id="login" href ="javascript:open1()">Login</a>
+</div>
+
+<!-- 로그인창 만들기  -->
+<div id ="modal">
+	<div class ="modal-content">
+		<form method="post" action="/project_kim/member/loginProc.html">
+		<input type="text"  placeholder="ID" maxlength="10" required><br>  <!--required : 반드시 입력해야됨  -->
+		<input type="password" placeholder="PW" maxlength="4" required><br>
+		<input type="submit" value="login">
+		</form>
+		<p>&nbsp;<a href ="member/memRegForm.html"> [sign up] |</a>  
+				 <a href ="#"> [find pw] |</a> 
+				 <a href="javascript:clo()" >[Close]</a>		
+		</p>	
+	</div>
+</div>
+<!--로그인창 스크립트 -->
+<script>
+	function open1(){
+		document.getElementById("modal").style.display ="block";
+		}
+	function clo(){
+		document.getElementById("modal").style.display ="none";
+		}
+	</script>		
+
+<div class="row">
+  <div class="leftcolumn">
+    <div class="card">
+      <i class="fa-solid fa-hashtag"></i><h2>otter's world</h2>
+            
+      <h5>2022.06.02</h5>
+      <div class="fakeimg" style="height:200px;">Image</div>
+      <p>Some text..</p>
+      <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+    </div>
+    
+    <div class="card">
+      <i class="fa-solid fa-hashtag"></i><h2>otter's pictures</h2>
+      <h5>2022.06.02</h5>
+      <div class="fakeimg" style="height:200px;">Image</div>
+      <p>Some text..</p>
+      <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+    </div>
+  </div>
+  <div class="rightcolumn">
+    <div class="card">
+      <h2>Save the endangered otter</h2>
+      <!-- <div class="fakeimg" style="height:200px;">Image</div> -->
+      <img src ="img/기도.jpg">
+    </div>
+    <div class="card">
+      <h3>Popular Post</h3>
+      <div class="fakeimg"><p>Image</p></div>
+      <div class="fakeimg"><p>Image</p></div>
+      <div class="fakeimg"><p>Image</p></div>
+    </div>
+    <div class="card">
+      <h3>Follow Me</h3>
+      <p>Some text..</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <h2>Footer</h2>
+</div>
+
+</body>
+</html>

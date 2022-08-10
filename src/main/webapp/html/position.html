@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+	<style> 
+	div {
+		border : solid 3px #000000;
+		background : #ff00ff;
+		}
+ 
+	/* relative = 상대적 위치 지정하는 것 */
+	div.relative{
+	position : relative;
+	top : 50px;
+	left : 50px;
+	border : 3px solid #000000;
+	}
+	/* 고정되어 움직이지 않는 것 */
+	div.fixed {
+ 	position: fixed;
+  	bottom: 0;
+  	right: 0;
+  	width: 300px;
+  	border: 3px solid #73AD21;
+	}
+	
+	/* 부모가 고정인것 (바디) 것 */
+	div.abs {
+  	position: absolute;  /* 부모를 중심으로 움직임 */
+  	bottom: 0;
+  	right: 0;
+ 	 width: 300px;
+ 	 border: 3px solid #73AD21;
+	}
+	div.abs_parent{
+	position : relative;
+	width : 500px;	
+	height : 200px;
+	background :lightblue;
+	border : 3px dotted #ffffff;
+	}
+	div.sticky{
+	position : sticky; 
+	top : 50px;
+	left : 50px;
+	width :50px;	
+	background-color :blue;
+	border : 2px solid #ffffff;
+	}
+	
+
+	</style>
+</head>
+<body>
+	<div>
+	static
+		</div>
+<div class ="relative">
+	relative
+		</div>
+<div class ="fixed">
+	fixed
+		</div>
+		
+<div class ="abs_parent"></div>
+<div class ="abs">
+	absolute
+		</div>
+<div class ="sticky">sticky</div>
+
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+<h1> who am i?</h1>
+
+</body>
+</html>
+
+
+
+
+

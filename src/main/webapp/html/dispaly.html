@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<style>
+div {
+  float: left;
+  padding: 5px; 
+  margin : 5px;
+}
+</style>
+
+
+</head>
+<body>
+
+<h2>숨기고 나타내고 하는것</h2>
+
+<div class="w3-content test" style="max-width:800px">
+<div class="w3-row-padding w3-center" style="margin:0 -16px">
+
+
+<div class="w3-col w3-border" id="imgbox1" style="width:30%;">
+	<p style="word-wrap: break-word;"><code class="w3-codespan">display:none</code></p>
+  		<img src="../img/기도.jpg" width="300" height="200" style="width:100%" alt="닭갈비">
+ 	 <p><button class="ws-btn w3-block" onclick="removeElement()">Remove</button></p>
+	</div>
+
+
+<div class="w3-col w3-border" style="width:30%;" id="imgbox2">
+	<p style="word-wrap: break-word;"><code class="w3-codespan">visibility:hidden</code></p>
+  		<img src="../img/수달.png" width="300" height="200"  alt="수달">
+ 	<p><button class="ws-btn w3-block" onclick="changeVisibility()">Hide</button></p>
+	</div>
+	
+
+
+<div class="w3-col w3-border" style="width:30%;"><p>Reset</p>
+  <img src="../img/해달.jpg" width="300" height="200"  alt="해달">
+  <p><button class="ws-btn w3-block" onclick="resetElement()">Reset All</button></p>
+	</div>
+
+</div>
+</div>
+<script>
+function removeElement() {
+    document.getElementById("imgbox1").style.display = "none";
+}
+
+function changeVisibility() {
+    document.getElementById("imgbox2").style.visibility = "hidden";
+}
+
+function resetElement() {
+    document.getElementById("imgbox1").style.display = "block";
+    document.getElementById("imgbox2").style.visibility = "visible";
+}
+</script>
+
+
+</body>
+</html>

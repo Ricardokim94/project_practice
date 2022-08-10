@@ -1,0 +1,45 @@
+ @charset "UTF-8";
+
+* {
+   text-decoration: none;
+	color: black; 
+	font-family: 'Source Sans Pro';
+	}
+
+.c{
+	width :100%;
+	border: 1px solid #444444;
+	line-height : 4;
+	border-collapse: collapse;
+}
+
+.logo {
+	font-size : 50px;
+	color : white;
+}
+.logo i{
+	color : #d49466;
+} 
+
+table.c thead th {
+	color : #d49466;
+	font-size : 30px;
+	border-bottom : 2px soild black;
+	
+}
+table.c thead tr {
+	color : #d49466;
+	font-size : 30px;
+}
+
+table.c tbody tr:hover{
+	background : lightgray
+}
+
+
+.as {
+	text-align : center;
+	font-size : 20px;
+	
+	
+}

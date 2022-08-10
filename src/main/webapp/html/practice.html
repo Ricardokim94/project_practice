@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>창목이의연습장</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Style the header */
+header {
+  background-color: #666;
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
+  color: white;
+}
+
+/* Create two columns/boxes that floats next to each other */
+nav {
+  float: left;
+  width: 30%;
+  height: 300px; /* only for demonstration, should be removed */
+  background: #ccc;
+  padding: 20px;
+}
+
+/* Style the list inside the menu */
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+article {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #f1f1f1;
+  height: 300px; /* only for demonstration, should be removed */
+}
+
+/* Clear floats after the columns */
+section::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the footer */
+footer {
+  background-color: #777;
+  padding: 10px;
+  text-align: center;
+  color: white;
+}
+
+/* Responsive layout - makes the two columns/boxes stack on top of each other instead of next to each other, on small screens */
+@media (max-width: 600px) {
+  nav, article {
+    width: 100%;
+    height: auto;
+  }
+}
+</style>
+</head>
+<body>
+
+<h2>김창목 닭갈비를 먹다</h2>
+<p>하지만 어제먹은 쭈꾸미가 더 맛있었다</p>
+<p>닭갈비란 무었??</p>
+
+<header>
+ <h3>닭갈비로삼행시한번해보겠습니다</h3>
+</header>
+
+ 
+<section>
+  <nav> <!-- nav는 네비게이션 경로 -->>
+    <ul> <!-- ui -->>
+      <li><a href="http://realfoods.co.kr/view.php?ud=20171220000847">멸종위기 토종닭을 생각하는 시간을 갖도록 하겠습니다</a></li><br>
+      <li><a href="https://news.sbs.co.kr/news/endPage.do?news_id=N1006581186">치킨으로 본 산업과 미식 사이의 오묘한 동거 </a></li>
+    </ul>
+  </nav>
+  <!--  -->
+  <article>
+    <h1>닭</h1>
+    <p>닭은 내맘을 알까? 당연히 모르지</p>
+    <h1>갈</h1>
+    <p>갈매기는 내맘을 알까? 당연히 모르지</p>
+    <h1>비</h1>
+    <p>비밀이니까 </p>
+  </article>
+</section>
+
+<footer>
+  <p><img src="../img/닭갈비.png" width="300" height="170"></p>
+</footer>
+
+</body>
+</html>

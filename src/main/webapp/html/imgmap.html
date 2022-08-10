@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<img src = "https://www.w3schools.com/html/workplace.jpg" 
+			style ="width:400; height:379;" usemap ="#cupmap">
+			
+<map name = "cupmap">
+	<area shape = "circle" coords ="337, 300, 44" href = "coffee.html">
+</map>
+
+<picture>
+  <source media="(min-width: 800px)" srcset="https://www.w3schools.com/html/img_food.jpg">
+   <!--650px미만이면 food가 나와라  -->
+  <source media="(min-width: 650px)" srcset="https://www.w3schools.com/html/img_car.jpg"> 
+  <!--465px미만이면 car가 나와라  -->
+  <img src="https://www.w3schools.com/html/img_girl.jpg" style="width:auto;"> 
+  <!--그외면 girl이 나와라  -->
+</picture>
+
+</body>
+</html>

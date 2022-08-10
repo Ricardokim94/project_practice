@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<style>
+	div{
+		border : solid 1px #ff00ff;
+		float :left;
+		margin : 10px;
+		text-align : center;
+		}
+	img{
+		display : block;
+		width : 300px;
+		height : 250px;
+		padding : 15px;
+		margin-top : 20px;
+		margin-bottom : 10px;
+		}
+	button{
+		width : 80%;
+		padding : 3px;
+		height : 30px;
+		background : skyblue;
+		border-radius : 5px;
+		}
+	
+	
+	
+</style>
+
+</head>
+<body>
+	<h2>줄바꾸는 법</h2>
+	
+	<div id="box1">
+	<h2>display:none</h2>
+	<img src = "../img/기도.jpg">
+	<button onclick ="removeTag()">remove</button>
+	</div>
+
+	<div id="box2">
+	<h2>visibility:hidden</h2>
+	<img src ="../img/수달.png">
+	<button onclick = "hiddenTag()">hide</button>
+	</div>
+	
+	<div id="box3">
+	<h2>Reset</h2>
+	<img src ="../img/해달.jpg">
+	<button onclick = "resetallTag()">reset all</button>
+	</div>
+
+<script>
+	function removeTag(){
+		 document.getElementById("box1").style.display = "none";
+	}
+	function hiddenTag(){
+		document.getElementById("box2").style.visibility = "hidden"; 
+	}
+	function resetallTag(){
+		document.getElementById("box1").style.display = "block"; 
+		document.getElementById("box2").style.visibility = "visible"; 
+	
+	
+		
+		
+	/* const aa = document.getElementsByClassName("box1")
+	aa[0].style.display = "none";
+		const aa = document.getElementsByClassName("box2")
+	aa[1].style.visibility = "hidden";
+	 */
+	
+	}
+</script>
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
