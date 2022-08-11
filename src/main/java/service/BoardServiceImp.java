@@ -57,33 +57,32 @@ public class BoardServiceImp implements BoardService {
 					}
 				
 				}else {
+				
 					//첨부파일 : 바이너리파일
-					long filesize = item.getSize();
-					System.out.println("업로드한 파일 사이즈 : " + filesize);
-					if(filesize > 0) {
-						String fileUploadPath = "d:/KCM/upload/";
-						String fileName = item.getName();
-						System.out.println("업로드 파일 이름 " + fileName);
-
-						int idx = fileName.lastIndexOf(".");
-						
-						String split_fileName = fileName.substring(0,idx);
-						String split_extension = fileName.substring(idx+1);
-						
+						long filesize = item.getSize();
+						System.out.println("업로드한 파일 사이즈 : " + filesize);
+						if(filesize > 0) {
+							String fileUploadPath = "d:/KCM/upload/";
+							String fileName = item.getName();
+							System.out.println("업로드 파일 이름 " + fileName);
+	
+							int idx = fileName.lastIndexOf(".");
+							
+							String split_fileName = fileName.substring(0,idx);
+							String split_extension = fileName.substring(idx+1);
 						
 					//중복된 파일을 업로드 하지 않기 위해 UID값 생성
 						UUID uid = UUID.randomUUID();
 						String saveFileName = split_fileName + "_" + uid + "." + split_extension;
 						System.out.println("저장할 파일 이름" + fileName);
-						
 					//업로드 파일 저장
 						File file = new File(fileUploadPath + saveFileName); //디렉토리 위치에 파일이름으로 등록하겠다는 것임
 						item.write(file);
 					//썸네일 파일 저장
 						String thumbFileName = "thumb" + "_" + saveFileName;
-						String thumbFilePath = "d:/KCM/thumbnail/";
+						String thumbFilePath = "d:/KCM/upload/thumbnail/";
 						File thumbFile = new File(thumbFilePath + thumbFileName);
-						Thumbnails.of(file);
+						Thumbnails.of(file).size(200, 200).toFile(thumbFile);
 					}
 				}
 			}
