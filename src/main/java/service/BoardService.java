@@ -13,4 +13,5 @@ public interface BoardService {
 	public Board searchBoard(String seqno);
 	
 	public void insertBoard(HttpServletRequest req, HttpServletResponse resp);
+	
 }

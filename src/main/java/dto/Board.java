@@ -11,9 +11,16 @@ public class Board {
 	private String wdate;
 	private String name;
 	private String id;
+	private String open;
 	private List<Reply> reply; //리플라이는 보드에 의존하고 있다.(의존성이 있다.)
 	
 	//private로 막았으니까 get set 만들어야 된다.
+	public String getOpen() {
+		return open;
+	}
+	public void setOpen(String open) {
+		this.open = open;
+	}
 	public String getSeqno() {
 		return seqno;
 	}
