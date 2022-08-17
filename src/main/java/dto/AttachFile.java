@@ -10,6 +10,13 @@ public class AttachFile {
 	private Thumbnail thumbnail;
 	
 	
+	
+	
+	public AttachFile() {
+		super();
+	}
+
+
 	//AttacheFile을 생성하려면 thumbnail 을 무조건 넣어라 (의존관계)
 	public AttachFile(Thumbnail thumbnail) {
 		super();

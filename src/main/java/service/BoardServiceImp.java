@@ -80,6 +80,22 @@ public class BoardServiceImp implements BoardService {
 					//업로드 파일 저장
 						File file = new File(fileUploadPath + saveFileName); //디렉토리 위치에 파일이름으로 등록하겠다는 것임
 						item.write(file);
+					
+						attachFile = new AttachFile();
+						//저장함(42열에 선언한 것에)
+						attachFile.setFileName(fileName);
+						attachFile.setSaveFileName(saveFileName); 
+						attachFile.setFilePath(fileUploadPath); 
+						attachFile.setFileSize(String.valueOf(filesize)); 
+						attachFile.setFiletype(item.getContentType());
+
+					//이미지 파일 타입 확인
+						String filetype = item.getContentType();
+						String type = filetype.substring(0,filetype.indexOf("/"));
+						System.out.println("업로드 파일 타입 : " + type);
+						
+						
+						if(type.equals("image")) {
 					//썸네일 파일 저장
 						String thumbFileName = "thumb" + "_" + saveFileName;
 						String thumbFilePath = "d:/KCM/upload/thumbnail/";
@@ -91,14 +107,8 @@ public class BoardServiceImp implements BoardService {
 						thumbnail.setFilePath(thumbFilePath); //경로 해야됨
 					//파일 사이즈 구하기
 						thumbnail.setFileSize(String.valueOf(thumbFile.length())); //파일 사이즈 담아야됨
-					
-						attachFile = new AttachFile(thumbnail);
-						//저장함(42열에 선언한 것에)
-						attachFile.setFileName(fileName);
-						attachFile.setSaveFileName(saveFileName); 
-						attachFile.setFilePath(fileUploadPath); 
-						attachFile.setFileSize(String.valueOf(filesize)); 
-						attachFile.setFiletype(item.getContentType());
+						attachFile.setThumbnail(thumbnail);
+						}
 					}
 				}
 			}
