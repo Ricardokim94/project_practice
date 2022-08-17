@@ -16,8 +16,6 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			//DB컨넥션
 	private final Connection conn = OracleConn.getInstance().getConn();
 	
-	
-	
 	public List<Board> boardList() {
 		 
 		List<Board>board = new ArrayList<Board>();
@@ -64,8 +62,6 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 	}
 
 	
-	
-	
 	public Board boardDetail(String seqno) {
 		
 		Board board = new Board();//보드를 try밖에다 해줘야함 안에다 하면 return 할때 모름
@@ -102,57 +98,45 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			   		board.setWdate(rs.getString("wdate"));
 			   		board.setCount(rs.getString("count"));
 			   		board.setName(rs.getString("name"));
-			   	
-			   		
 			   		//rs.last();
 			   		//Reply[] re = new Reply[rs.getRow()-1]; //마지막행번호를 re에 담음
-			   		
 			   		List<Reply> re = new ArrayList<Reply>();
-			   		
-			   		
-			   		
-//			   		
 			   		//rs.beforeFirst(); //첫번째로가라다시
 //			   		rs.next();
-			   		
 			   			while(rs.next()) {
-			   			
 				   			Reply reply = new Reply();
 				   			reply.setId(rs.getString("id"));
 				   			reply.setComment(rs.getString("content"));
 				   			reply.setWdate(rs.getString("wdate"));
-				   			
 				   			re.add(reply);
 				   			//re[i] = reply;
 			   			}
-//			   		
 //			   		for(int i=0; i<re.length; i++) {
 //			   			rs.next();
 //			   			re[i].setId(rs.getString("id"));
 //			   			re[i].setComment(rs.getString("content"));
 //			   			re[i].setWdate(rs.getString("wdate"));
 //			   		}
-			   		
+
 			   			board.setReply(re);		//마지막이 re니까 이걸 보드에 담으면 됨
-			    
-			   			
 		} catch (SQLException e) {
 				e.printStackTrace();
 		}
-		
-		
 		return board;
 	}
-	
-	
-	
 
-	public void insert(Board board, AttachFile attachFile) {
+	
+	public String insert(Board board, AttachFile attachFile) {
 		
 		String sql = "insert into board(seqno, title, content, open, id) values (board_seq.nextval,?,?,?,?)";
 		PreparedStatement stmt;
 		
+		String seqno = null;
+		
 		   try {
+			   //false를 주면 자동으로 commit이 안된다.
+			   conn.setAutoCommit(false);
+			
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, board.getTitle());
 			stmt.setString(2, board.getContent());
@@ -165,7 +149,10 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			stmt = conn.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
-			String seqno = rs.getString("seqno");
+			seqno = rs.getString("seqno");
+			
+				//이때 컴밋을 해라
+				conn.commit();
 			
 			//첨부파일 저장
 			sql = "insert into attachfile(no, filename, savefilename, filesize, filetype, filepath, board_seq)"
@@ -187,6 +174,7 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			rs.next();
 			String attach_no = rs.getString(1);
 			
+			
 			//썸네일 저장
 			sql = "insert into attachfile_thumb(no, filename, filesize, filepath, attach_no)"
 					+ "values (ATTACHFILE_THUMB_SEQ.NEXTVAL,?,?,?,?)";
@@ -197,12 +185,21 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			stmt.setString(4, attach_no);
 			
 			stmt.executeQuery();
-			
-			
-		   } catch (SQLException e) {
+				//이때 컴밋을 해라
+				conn.commit();
+				conn.setAutoCommit(true);
+				
+		   } catch (Exception e) {
+			   //Exception이 발생이 되면 롤백!
+			   try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				System.out.println("rollback처리됨");
+			}
 			e.printStackTrace();
 		}
 		
+		   return seqno;
 	}
 
 }

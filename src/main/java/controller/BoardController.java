@@ -41,8 +41,11 @@ public class BoardController extends HttpServlet {
 			req.setAttribute("board", board); //페이지에 넘길때는 이렇게 넘김
 			goView(req, resp, "/board/boardList.jsp");
 		}else if(cmd.equals("boardDetail.bo")) {  //제목눌렀을때 같으면 이거 실행해라
-			//게시판 댓글
+			//게시판 세부내용 출력
 			String seqno = req.getParameter("seqno");
+			if(seqno == null) {
+				seqno = (String)req.getAttribute("seqno");
+			}
 			Board b = bs.searchBoard(seqno);
 			req.setAttribute("board", b); //jsp 뷰에다 넘기려면 setA~해줘야한다.
 			goView(req, resp, "/board/boardDetail.jsp");
@@ -50,7 +53,8 @@ public class BoardController extends HttpServlet {
 			//등록버튼 누르면 등록 뜨는것
 			goView(req, resp, "/board/boardForm.jsp");
 		}else if(cmd.equals("boardReg.bo")) { //boardForm 25줄
-			bs.insertBoard(req, resp);
+			req.setAttribute("seqno", bs.insertBoard(req, resp));
+			goView(req, resp, "boardDetail.bo"); 
 		}
 	}
 	

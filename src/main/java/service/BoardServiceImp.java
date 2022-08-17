@@ -32,7 +32,7 @@ public class BoardServiceImp implements BoardService {
 		return boardDao.boardDetail(seqno);
 	}
 	@Override //파일업로드 할때 쓰는것!
-	public void insertBoard(HttpServletRequest req, HttpServletResponse resp) {
+	public String insertBoard(HttpServletRequest req, HttpServletResponse resp) {
 		
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 	    factory.setDefaultCharset(CHARSET);
@@ -109,8 +109,7 @@ public class BoardServiceImp implements BoardService {
 			e.printStackTrace();
 		}
 		
-		boardDao.insert(board, attachFile);
-		
+		return boardDao.insert(board, attachFile);
 	}
 }
 
