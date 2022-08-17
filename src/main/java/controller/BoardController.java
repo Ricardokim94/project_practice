@@ -49,7 +49,7 @@ public class BoardController extends HttpServlet {
 		}else if(cmd.equals("boardRegForm.bo")) {
 			//등록버튼 누르면 등록 뜨는것
 			goView(req, resp, "/board/boardForm.jsp");
-		}else if(cmd.equals("boardReg.bo")) {
+		}else if(cmd.equals("boardReg.bo")) { //boardForm 25줄
 			bs.insertBoard(req, resp);
 		}
 	}

@@ -8,12 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import common.OracleConn;
+import dto.AttachFile;
 import dto.Board;
 import dto.Reply;
 
 public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			//DB컨넥션
 	private final Connection conn = OracleConn.getInstance().getConn();
+	
+	
 	
 	public List<Board> boardList() {
 		 
@@ -60,6 +63,9 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 		return board;
 	}
 
+	
+	
+	
 	public Board boardDetail(String seqno) {
 		
 		Board board = new Board();//보드를 try밖에다 해줘야함 안에다 하면 return 할때 모름
@@ -136,6 +142,67 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 		
 		
 		return board;
+	}
+	
+	
+	
+
+	public void insert(Board board, AttachFile attachFile) {
+		
+		String sql = "insert into board(seqno, title, content, open, id) values (board_seq.nextval,?,?,?,?)";
+		PreparedStatement stmt;
+		
+		   try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, board.getTitle());
+			stmt.setString(2, board.getContent());
+			stmt.setString(3, board.getOpen());
+			stmt.setString(4, board.getId());
+			stmt.executeQuery();
+			
+			//보드 시퀀스넘버 가져오는 것
+			sql = "select max(seqno) as seqno from board";
+			stmt = conn.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			String seqno = rs.getString("seqno");
+			
+			//첨부파일 저장
+			sql = "insert into attachfile(no, filename, savefilename, filesize, filetype, filepath, board_seq)"
+				+ "values (ATTACHFILE_seq.nextval,?,?,?,?,?,?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, attachFile.getFileName());
+			stmt.setString(2, attachFile.getSaveFileName());
+			stmt.setString(3, attachFile.getFileSize());
+			stmt.setString(4, attachFile.getFiletype());
+			stmt.setString(5, attachFile.getFilePath());
+			stmt.setString(6, seqno);
+			
+			stmt.executeQuery();
+			
+			//어테치 시퀀스 넘버
+			sql = "select max(no) from attachFile";
+			stmt = conn.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			rs.next();
+			String attach_no = rs.getString(1);
+			
+			//썸네일 저장
+			sql = "insert into attachfile_thumb(no, filename, filesize, filepath, attach_no)"
+					+ "values (ATTACHFILE_THUMB_SEQ.NEXTVAL,?,?,?,?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, attachFile.getThumbnail().getFileName());
+			stmt.setString(2, attachFile.getThumbnail().getFileSize());
+			stmt.setString(3, attachFile.getThumbnail().getFileSize());
+			stmt.setString(4, attach_no);
+			
+			stmt.executeQuery();
+			
+			
+		   } catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

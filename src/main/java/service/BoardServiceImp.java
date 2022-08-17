@@ -1,7 +1,6 @@
 package service;
 
 import java.io.File;
-import java.security.cert.Extension;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,7 +10,9 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import dao.BoardDao;
+import dto.AttachFile;
 import dto.Board;
+import dto.Thumbnail;
 import net.coobird.thumbnailator.Thumbnails;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,7 @@ public class BoardServiceImp implements BoardService {
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		
 		Board board = new Board();
+		AttachFile attachFile = null; //try문 밖에서 선언해야 안사라진다.
 		
 		try {
 			List<FileItem> items = upload.parseRequest(req);
@@ -55,13 +57,13 @@ public class BoardServiceImp implements BoardService {
 					if(item.getFieldName().equals("content")) {
 						board.setContent(item.getString());
 					}
-				
+					 board.setId((String)req.getSession().getAttribute("sess_id"));
 				}else {
 				
 					//첨부파일 : 바이너리파일
 						long filesize = item.getSize();
 						System.out.println("업로드한 파일 사이즈 : " + filesize);
-						if(filesize > 0) {
+						if(filesize > 0) { //0보다 크다는건 파일이 업로드 된거다
 							String fileUploadPath = "d:/KCM/upload/";
 							String fileName = item.getName();
 							System.out.println("업로드 파일 이름 " + fileName);
@@ -83,6 +85,20 @@ public class BoardServiceImp implements BoardService {
 						String thumbFilePath = "d:/KCM/upload/thumbnail/";
 						File thumbFile = new File(thumbFilePath + thumbFileName);
 						Thumbnails.of(file).size(200, 200).toFile(thumbFile);
+						
+						Thumbnail thumbnail = new Thumbnail();
+						thumbnail.setFileName(thumbFileName); // 파일을 다 담아야된다.
+						thumbnail.setFilePath(thumbFilePath); //경로 해야됨
+					//파일 사이즈 구하기
+						thumbnail.setFileSize(String.valueOf(thumbFile.length())); //파일 사이즈 담아야됨
+					
+						attachFile = new AttachFile(thumbnail);
+						//저장함(42열에 선언한 것에)
+						attachFile.setFileName(fileName);
+						attachFile.setSaveFileName(saveFileName); 
+						attachFile.setFilePath(fileUploadPath); 
+						attachFile.setFileSize(String.valueOf(filesize)); 
+						attachFile.setFiletype(item.getContentType());
 					}
 				}
 			}
@@ -92,6 +108,9 @@ public class BoardServiceImp implements BoardService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		boardDao.insert(board, attachFile);
+		
 	}
 }
 
