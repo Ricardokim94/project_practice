@@ -23,8 +23,6 @@ public class AttachFile {
 		this.thumbnail = thumbnail;
 	}
 
-	
-	
 	public String getFiletype() {
 		return filetype;
 	}

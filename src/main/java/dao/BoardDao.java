@@ -126,7 +126,7 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			   	sql = "select a.*, at.filename as thumb_name, "
 			   		+ " at.filesize as thumb_size, at.filepath as thumb_path"	
 			   		+ "	from attachfile a, attachfile_thumb at"
-			   		+ " where a.no = at.attach_no and a.board_seq = ?";
+			   		+ " where a.no = at.attach_no(+) and a.board_seq = ?";
 				   			
 				stmt = conn.prepareStatement(sql);
 				stmt.setString(1, seqno);

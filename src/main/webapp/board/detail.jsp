@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 
 <!DOCTYPE html>
@@ -45,16 +46,32 @@
 					  </form>	
 				</div>	
 			 
-					<!-- 첨부파일 -->
-					<div>
-						<c:set value="${board.attachfile}" var="attachfile" />
-						<c:if test="${attachfile != null}">
+				
+				<!-- 첨부파일 -->
+				<div>
+					<c:set value="${board.attachfile}" var="attachfile" />
+					<c:if test="${attachfile != null}">
 						<c:forEach items="${attachfile}" var="file">
-							(파일 이름 : ${file.fileName}) 
-							(파일 사이즈 :${file.fileSize})
+							
+							<form name="filedown" method="post" action="/file/fileDown">
+							  <input type="hidden" name ="filename" value="${file.fileName }">
+							  <input type="hidden" name="savefilename" value="${file.saveFileName }">	
+							  <input type="hidden" name ="filepath" value="${file.filePath }">
+							  
+								<c:set value="${file.filetype}" var = "filetype" />
+								<!-- 파일타입이 이미지 인지 아닌지 뜯어내야됨 -->
+								<c:set value="${fn:substring(filetype,0,fn:indexOf(filetype,'/')) }" var="type" />
+								
+								<c:if test="${type eq 'image' }">
+									<c:set value="${file.thumbnail.fileName}" var="thumb_file" />
+									<img src="/upload/thumbnail/${thumb_file}">
+								</c:if>
+								${file.fileName} (파일 사이즈 :${file.fileSize})
+								<input type ="submit" value="다운로드">
+							</form>
 						</c:forEach>
-						</c:if>
-					</div>
+					</c:if>
+				</div>
 				
 				<div class = reply> 
 			    <c:set value="${board.reply}" var="reply" />
