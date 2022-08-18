@@ -35,7 +35,7 @@ public class MemberController extends HttpServlet {
 	//get으로 오든 post로 오든 doAction으로 처리 하겠다는 거임
 	private void doAction(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		resp.setContentType("text/html; charset=utf8");
-		req.setCharacterEncoding("utf-8");
+		//req.setCharacterEncoding("utf-8");
 		
 		String uri = req.getRequestURI(); //uri 정보 가져올 수 있다.
 		String cmd = uri.substring(uri.lastIndexOf("/")+1);

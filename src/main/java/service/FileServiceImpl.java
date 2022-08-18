@@ -23,11 +23,11 @@ public class FileServiceImpl implements FileService {
 
 	@Override
 	public void fileDown(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			request.setCharacterEncoding("utf-8");
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}
+//		try {
+//			request.setCharacterEncoding("utf-8");
+//		} catch (UnsupportedEncodingException e1) {
+//			e1.printStackTrace();
+//		}
 		
 		String filename = request.getParameter("filename");
 		String saveFileName = request.getParameter("savefilename");
