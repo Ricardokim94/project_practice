@@ -49,8 +49,8 @@
 	  	  		 		<c:set value="${fn:substring(filetype, 0, fn:indexOf(filetype, '/'))}" var="type" />
 	  	  		 	
 	  	  		 		<c:if test="${type eq 'image' }">
-	  	  		 			<c:set value="${file.thumbnail.fileName }" />
-	  	  		 			<img src="upload/thumbmail/${thumb_file}">
+	  	  		 			<c:set value="${file.thumbnail.fileName }" var="thumb_file"/>
+	  	  		 			<img src="/upload/thumbnail/${thumb_file}">
 	  	  		 		</c:if>	
 	  	  		 		${file.fileName} (사이즈:${file.fileSize})
 	  	  		 	</c:forEach>
