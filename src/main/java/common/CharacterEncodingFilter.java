@@ -32,10 +32,19 @@ public class CharacterEncodingFilter extends HttpFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		System.out.println("doFilter() 호출");
-		//요청필터기능
+		//요청필터기능----------------------------
+		long begin = System.currentTimeMillis();
+		
+		System.out.println("encoding : " + config.getInitParameter("encoding"));
 		request.setCharacterEncoding(config.getInitParameter("encoding"));
+		
 		chain.doFilter(request, response); //서블릿으로 가려면 이걸 해야된다. (그다음 필터가 있는지 찾는다. 없으면 서블릿을 실행한다.)
-		//응답필터기능
+		
+		//응답필터기능----------------------------
+		System.out.println("응답필터 시작-----------");
+		long end = System.currentTimeMillis();
+		System.out.println("작업시간 : " + (end-begin) + "ms");
+		
 	}
 
 	public void init(FilterConfig fConfig) throws ServletException {

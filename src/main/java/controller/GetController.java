@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @WebServlet("/get")
-public class Login2 extends HttpServlet {
+public class GetController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public Login2() {
+    public GetController() {
         super();
     }
 
