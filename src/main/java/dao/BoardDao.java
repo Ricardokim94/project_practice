@@ -74,13 +74,13 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			stmt.executeUpdate();
 
 			//해당 게시물 세부내용 조회
-			   sql = "select title , b.content content, b.id,";
+			   sql = "select title , b.content content, b.id,b.open, ";
 			   sql+= " 			TO_CHAR(b.wdate, 'yyyy\\\"년\\\"mm\\\"월\\\"dd\\\"일(\\\"DY\\\")\\\" HH:MI:SS PM') wdate,";
 			   sql+= " 			count,(select name from member m where m.id = b.id) name";
 			   sql+= " from board b";
 			   sql+= " where b.seqno=?";
 			   sql+= " union all";
-			   sql+= " select '', content, r.id,";
+			   sql+= " select '', content, r.id, '',";
 			   sql+= " 			TO_CHAR(r.wdate, 'yyyy\\\"년\\\"mm\\\"월\\\"dd\\\"일(\\\"DY\\\")\\\" HH:MI:SS PM'),";
 			   sql+= " 			0, (select name from member m where m.id = r.id)";
 			   sql+= " from reply r";
@@ -99,6 +99,7 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			   		board.setWdate(rs.getString("wdate"));
 			   		board.setCount(rs.getString("count"));
 			   		board.setName(rs.getString("name"));
+			   		board.setOpen(rs.getString("open"));
 			   		//rs.last();
 			   		//Reply[] re = new Reply[rs.getRow()-1]; //마지막행번호를 re에 담음
 			   		List<Reply> re = new ArrayList<Reply>();

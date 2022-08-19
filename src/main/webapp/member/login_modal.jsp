@@ -4,7 +4,7 @@
     <!-- 로그인창 만들기  -->
 <div id ="modal">
 	<div class ="modal-content">
-		<form method="post" action="login.do">
+		<form method="post" action="/login">
 			<input type="text"  placeholder="ID" required name="id"><br>  <!--required : 반드시 입력해야됨  -->
 			<input type="password" placeholder="PW" required name="pw"><br>
 			<input type="submit" value="login">

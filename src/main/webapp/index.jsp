@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="common.LoginImpl" %>
 
 <!DOCTYPE html>
 <html>
@@ -41,10 +43,11 @@
 <input type ="hidden" name="msg" value="<%=request.getAttribute("msg") %>">
 
 <%@ include file ="header.jsp" %>
-
-
 <%@ include file= "menu.jsp" %>
 
+<c:set value="${loginUser }" var = "loginuser" />
+JSP코드인 현재접속 : <%= LoginImpl.total_user %>
+<p> 현재 접속자수 : ${loginuser.getTotal_user() } 명 </p>
 
 <div class="row">
   <div class="leftcolumn">

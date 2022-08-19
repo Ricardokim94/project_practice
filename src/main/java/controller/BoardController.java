@@ -48,7 +48,15 @@ public class BoardController extends HttpServlet {
 			}
 			Board b = bs.searchBoard(seqno);
 			req.setAttribute("board", b); //jsp 뷰에다 넘기려면 setA~해줘야한다.
-			goView(req, resp, "/board/detail.jsp");
+			
+			//게시물 수정
+			String page = req.getParameter("page");
+			if(page != null) {
+				goView(req, resp, "/board/modify.jsp");
+			}else {
+				goView(req, resp, "/board/detail.jsp");
+			}
+			
 		}else if(cmd.equals("boardRegForm.bo")) {
 			//등록버튼 누르면 등록 뜨는것
 			goView(req, resp, "/board/boardForm.jsp");

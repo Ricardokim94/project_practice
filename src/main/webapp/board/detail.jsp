@@ -28,10 +28,13 @@
 		 	<a href="">★상세내용★</a>	
 		 	
 		 	<c:set value="${board}" var="board" />
+		 	<c:set value="${loginUser}" var="user" />
 		 	
-		 	<button class = "button1" style=float:right onclick="location.href='change.jsp?no=${board.seqno}'">수정</button>
-		 	<button class = "button1" style=float:right onclick="location.href='delete.jsp?no=${board.seqno}'">삭제</button>
-		 	 <hr>
+		 	<c:if test="${user.id eq board.id }">
+			 	<button class = "button1" style=float:right onclick="location.href='/boardDetail.bo?seqno=${board.seqno}&page=momdify'">수정</button>
+			 	<button class = "button1" style=float:right onclick="location.href='delete.jsp?no=${board.seqno}'">삭제</button>
+		 	 </c:if>
+		 	  <hr>
 				 <div class = "cccc">	
 				 	★제목 : ${board.seqno}<hr>
 				 	★작성날짜 : ${board.wdate}<hr>
