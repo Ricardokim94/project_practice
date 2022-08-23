@@ -26,7 +26,7 @@
 	      
 	      
 	      <c:set value="${board}" var="board" />
-	      <form name="boardForm" method="post" action="changeproc.jsp">
+	      <form name="boardForm" enctype="multipart/form-data" method="post" action="/modify.bo">
 		    <div class="card">
 				 <input type ="hidden" name="seqno" value="${board.seqno}"></input>
 			     <input type="text" name="title" value="${board.title}" required>
@@ -47,12 +47,14 @@
 	  	  		 	<c:forEach items="${attachfile }" var="file" >
 	  	  		 		<c:set value="${file.filetype}" var="filetype" />
 	  	  		 		<c:set value="${fn:substring(filetype, 0, fn:indexOf(filetype, '/'))}" var="type" />
-	  	  		 	
+	  	  		 	<div id="fileSector">
 	  	  		 		<c:if test="${type eq 'image' }">
 	  	  		 			<c:set value="${file.thumbnail.fileName }" var="thumb_file"/>
 	  	  		 			<img src="/upload/thumbnail/${thumb_file}">
 	  	  		 		</c:if>	
 	  	  		 		${file.fileName} (사이즈:${file.fileSize})
+	  	  		 	<input type="button" value="삭제" onclick="fileDel('${file.no}','${file.saveFileName}', '${file.filePath}', '${thumb_file}')">
+	  	  		 	</div>
 	  	  		 	</c:forEach>
 	  	  		 </c:when>
 	  	  		 </c:choose>	
@@ -62,7 +64,36 @@
 	  	  	</div>
 	  	  </form>
 	
-				    
+<script>
+function fileDel(no, savefilename, filepath, thumb_filename){
+	
+	var ans = confirm("정말로 삭제하시겠습니까?");
+	if (ans){
+		var x = new XMLHttpRequest();
+		x.onreadystatechange = function(){
+			if(x.readyState === 4 && x.status === 200){
+				
+				var tag = document.getElementById("fileSector");
+				
+				if(x.responseText.trim() === "0"){
+					alert("파일 삭제 실패 하였습니다.");
+				} else {
+					alert("파일 삭제 하였습니다.");	
+					tag.innerHTML = "<input type='file' name='filename'>";
+				}
+				
+			} else {
+				console.log('에러코드:'+ x.status);
+			}
+		};
+	}
+	
+	x.open("POST", "/file/fileDel", true);
+	x.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	x.send("no="+no+"&savefilename="+savefilename+"&filepath="+filepath+"&thumb_filename="+thumb_filename);
+}
+
+</script>    				    
    </div>
   <div class="rightcolumn">
     <div class="card">

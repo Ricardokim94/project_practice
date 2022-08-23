@@ -1,11 +1,18 @@
 package dto;
 
 public class Thumbnail {
-	private String fileName;
+	private String no;
+	private String fileName;	
 	private String filePath;
 	private String fileSize;
 	
 	
+	public String getNo() {
+		return no;
+	}
+	public void setNo(String no) {
+		this.no = no;
+	}
 	
 	public String getFileName() {
 		return fileName;

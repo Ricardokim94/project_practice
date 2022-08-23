@@ -86,7 +86,8 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			   sql+= " from reply r";
 			   sql+= " where r.board_seqno = ?";
 				
-			   stmt = conn.prepareStatement(sql);
+			   stmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, 
+						  ResultSet.CONCUR_UPDATABLE);
 			   stmt.setString(1, seqno);
 			   stmt.setString(2, seqno);
 			   ResultSet rs = stmt.executeQuery(); //rs이제 결과를 보드로 담아야됨
@@ -112,6 +113,7 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 				   			reply.setId(rs.getString("id"));
 				   			reply.setComment(rs.getString("content"));
 				   			reply.setWdate(rs.getString("wdate"));
+				   			reply.setName(rs.getString("name"));
 				   			re.add(reply);
 				   			//re[i] = reply;
 			   			}
@@ -126,34 +128,41 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			   			
 			   
 			   	//첨부파일 저장
-			   	sql = "select a.*, at.filename as thumb_name, "
-			   		+ " at.filesize as thumb_size, at.filepath as thumb_path"	
-			   		+ "	from attachfile a, attachfile_thumb at"
-			   		+ " where a.no = at.attach_no(+) and a.board_seq = ?";
-				   			
+	   			sql = "SELECT * FROM attachfile where board_seq = ?";
 				stmt = conn.prepareStatement(sql);
-				stmt.setString(1, seqno);
-				rs = stmt.executeQuery(); 
+				stmt.setString(1, seqno);			
+				rs = stmt.executeQuery();
 						
 				List<AttachFile> fileList = new ArrayList<AttachFile>();
 					
 				while(rs.next()) {
 					AttachFile attachfile = new AttachFile();
+					attachfile.setNo(rs.getString("no"));
 					attachfile.setFileName(rs.getString("filename"));
 					attachfile.setSaveFileName(rs.getString("savefilename"));
 					attachfile.setFileSize(rs.getString("filesize"));
 					attachfile.setFiletype(rs.getString("filetype"));
-					attachfile.setFilePath(rs.getString("filepath"));
-			
+					attachfile.setFilePath(rs.getNString("filepath"));				
 					
-					Thumbnail th = new Thumbnail();
-					th.setFileName(rs.getString("thumb_name"));
-					th.setFileSize(rs.getString("thumb_size"));
-					th.setFilePath(rs.getString("thumb_path"));
-					attachfile.setThumbnail(th);
+					if(rs.getString("filetype").contains("image")) {				
+						sql = "SELECT * FROM attachfile_thumb WHERE attach_no = ? ";
+						stmt = conn.prepareStatement(sql);
+						stmt.setString(1, rs.getString("no"));			
+						ResultSet rs2 = stmt.executeQuery();
+						
+						while(rs2.next()) {
+							Thumbnail th = new Thumbnail();	
+							th.setNo(rs2.getString("no"));
+							th.setFileName(rs2.getString("filename"));
+							th.setFileSize(rs2.getString("filesize"));
+							th.setFilePath(rs2.getString("filepath"));
+							attachfile.setThumbnail(th);
+						}
+					}
 					fileList.add(attachfile);
-				} 
-			   		board.setAttachfile(fileList);	
+				}
+				
+				board.setAttachfile(fileList);
 			   			
 		} catch (SQLException e) {
 				e.printStackTrace();
@@ -188,61 +197,109 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			rs.next();
 			seqno = rs.getString("seqno");
 			
-			 if(attachFile != null) {
-				//첨부파일 저장
-				sql = "insert into attachfile(no, filename, savefilename, filesize, filetype, filepath, board_seq)"
-					+ "values (ATTACHFILE_seq.nextval,?,?,?,?,?,?)";
-				stmt = conn.prepareStatement(sql);
-				stmt.setString(1, attachFile.getFileName());
-				stmt.setString(2, attachFile.getSaveFileName());
-				stmt.setString(3, attachFile.getFileSize());
-				stmt.setString(4, attachFile.getFiletype());
-				stmt.setString(5, attachFile.getFilePath());
-				stmt.setString(6, seqno);
+			//첨부파일
+			if(attachFile != null) {
 				
-				stmt.executeQuery();
+				String attach_no = insertAttachFile(seqno, attachFile);				
+				String fileType = attachFile.getFiletype();				
 				
-				//어테치 시퀀스 넘버
-				sql = "select max(no) from attachFile";
-				stmt = conn.prepareStatement(sql);
-				rs = stmt.executeQuery();
-				rs.next();
-				String attach_no = rs.getString(1);
-				
-				conn.commit();
-				
-				if(attachFile.getThumbnail() != null) {
-				
-				//썸네일 저장
-					sql = "insert into attachfile_thumb(no, filename, filesize, filepath, attach_no)"
-							+ "values (ATTACHFILE_THUMB_SEQ.NEXTVAL,?,?,?,?)";
-					stmt = conn.prepareStatement(sql);
-					stmt.setString(1, attachFile.getThumbnail().getFileName());
-					stmt.setString(2, attachFile.getThumbnail().getFileSize());
-					stmt.setString(3, attachFile.getThumbnail().getFileSize());
-					stmt.setString(4, attach_no);
-					
-					stmt.executeQuery();
+				//썸네일
+				if(fileType.substring(0, fileType.indexOf("/")).equals("image")) {
+					insertThumbNail(attach_no, attachFile);
 				}
-			 }
-			 //이때 컴밋을 해라
-			 conn.commit();
-			 conn.setAutoCommit(true);
-		   } catch (Exception e) {
-			   //Exception이 발생이 되면 롤백!
-			   try {
-				   conn.rollback();
-			   } catch (SQLException e1) {
-				   System.out.println("rollback처리됨");
-			   }
-			   e.printStackTrace();
-		   }
-
-		   return seqno;
+			}
+			conn.commit();
+			conn.setAutoCommit(true);
+		} catch (Exception e) {						
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {				
+				System.out.println("rollback처리됨");
+			}
+			e.printStackTrace();
+		}
+		
+		return seqno; 
 	}
+	
+	void insertThumbNail(String attach_no, AttachFile attachFile) {
+		//썸네일 저장
+		String sql = "INSERT INTO attachfile_thumb(no, filename, filesize, filepath, attach_no) "
+		    + " VALUES (ATTACHFILE_THUMB_SEQ.NEXTVAL, ?,?,?,?)";
+		
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			Thumbnail thumb = attachFile.getThumbnail();
+			stmt.setString(1, thumb.getFileName());
+			stmt.setString(2, thumb.getFileSize());
+			stmt.setString(3, thumb.getFilePath());
+			stmt.setString(4, attach_no);
+			stmt.executeQuery();
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		}		
+	}
+	
+	String insertAttachFile(String seqno, AttachFile attachFile) {
+		//첨부파일저장
+		String sql = "INSERT INTO attachFile(no, filename, savefilename, filesize, filetype, filepath, board_seq)"
+			+ " VALUES (ATTACHFILE_SEQ.NEXTVAL, ?,?,?,?,?,?)";
+		PreparedStatement stmt;
+		String attach_no = null;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, attachFile.getFileName());
+			stmt.setString(2, attachFile.getSaveFileName());
+			stmt.setString(3, attachFile.getFileSize());
+			stmt.setString(4, attachFile.getFiletype());
+			stmt.setString(5, attachFile.getFilePath());
+			stmt.setString(6, seqno);
+			stmt.executeQuery();
+			
+			sql = "SELECT max(no) FROM attachFile";
+			stmt = conn.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			attach_no =rs.getString(1);			
+			conn.commit();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return attach_no;
+	}		
 
+	public void update(Board board, AttachFile attachFile) {
+		//보드 update
+		String sql="UPDATE board SET title=?, content=?, open=? WHERE seqno=?";
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, board.getTitle());
+			stmt.setString(2, board.getContent());
+			stmt.setString(3, board.getOpen());
+			stmt.setString(4, board.getSeqno());
+			stmt.executeQuery();
+			
+			//첨부파일
+			if(attachFile != null) {				
+				String attach_no = insertAttachFile(board.getSeqno(), attachFile);				
+				String fileType = attachFile.getFiletype();				
+				
+				//썸네일
+				if(fileType.substring(0, fileType.indexOf("/")).equals("image")) {
+					insertThumbNail(attach_no, attachFile);
+				}
+			}			
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		}		
+		
+	}
+	
 }
-
 
 
 

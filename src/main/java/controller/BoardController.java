@@ -63,6 +63,9 @@ public class BoardController extends HttpServlet {
 		}else if(cmd.equals("boardReg.bo")) { //boardForm 25줄
 			req.setAttribute("seqno", bs.insertBoard(req, resp));
 			goView(req, resp, "boardDetail.bo"); 
+		}else if(cmd.equals("modify.bo")) {
+			req.setAttribute("seqno", bs.update(req, resp));
+			goView(req, resp, "boardDetail.bo"); 
 		}
 	}
 	

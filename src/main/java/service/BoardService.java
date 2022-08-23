@@ -14,4 +14,5 @@ public interface BoardService {
 	
 	public String insertBoard(HttpServletRequest req, HttpServletResponse resp);
 	
+	public String update(HttpServletRequest req, HttpServletResponse resp);
 }

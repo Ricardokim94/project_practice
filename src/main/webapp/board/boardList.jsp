@@ -26,7 +26,7 @@
 				<div class="logo">
 					<i class="fa-solid fa-clipboard"></i> 
 					<a>게시판</a>
-					<c:if test="${sess_name != null}">
+					<c:if test="${loginUser != null}">
 						<input type="submit" value="등록">
 					</c:if>
 				</div>

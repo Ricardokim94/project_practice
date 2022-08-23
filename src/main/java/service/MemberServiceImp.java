@@ -2,24 +2,24 @@ package service;
 
 import java.util.Map;
 
+import javax.servlet.http.*;
+
 import dao.MemberDao;
-import javax.servlet.http.HttpServletRequest;
+
 
 public class MemberServiceImp implements MemberService {
-	MemberDao dao= new MemberDao();
 
 	@Override
 	public Map<String, String> login(String id, String pw) {
-		return dao.loginProc(id, pw);
+		//MemberDao에 loginProc() 호출
+		MemberDao mdo = new MemberDao();		
+		return mdo.loginProc(id, pw);
 	}
 
 	@Override
 	public int insert(HttpServletRequest req) {
-			
-		return dao.insertMember(req);
+		MemberDao mdo = new MemberDao();		
+		return mdo.insertMember(req);
 	}
 
 }
-
-
-

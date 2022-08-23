@@ -1,12 +1,12 @@
 package dto;
 
 public class AttachFile {
+	private String no;
 	private String fileName;
 	private String saveFileName;
 	private String filePath;
 	private String fileSize;
 	private String filetype;
-
 	private Thumbnail thumbnail;
 	
 	
@@ -23,6 +23,14 @@ public class AttachFile {
 		this.thumbnail = thumbnail;
 	}
 
+	public String getNo() {
+		return no;
+	}
+
+	public void setNo(String no) {
+		this.no = no;
+	}
+	
 	public String getFiletype() {
 		return filetype;
 	}
