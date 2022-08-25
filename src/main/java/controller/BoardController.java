@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dto.Board;
+import dto.Criteria;
+import dto.Page;
+import service.BoardService;
 import service.BoardServiceImp;
 
 @WebServlet(urlPatterns = {"*.bo"})
@@ -37,7 +40,17 @@ public class BoardController extends HttpServlet {
 		
 		if(cmd.equals("boardList.bo")) {
 			//게시판리스트
-			List<Board> board = bs.list(); //보드배열타입의 보드로 받아줘야된다 list를
+			String currentPage =req.getParameter("currentPage");
+			String rowPerPage = req.getParameter("rowPerPage");
+			if(currentPage == null) currentPage ="1";
+			if(rowPerPage == null) rowPerPage ="3";
+			
+			Criteria cri = new Criteria(Integer.parseInt(currentPage), Integer.parseInt(rowPerPage));
+			
+			List<Board> board = bs.list(cri); //보드배열타입의 보드로 받아줘야된다 list를
+			
+			//페이지 객체를 만듬
+			req.setAttribute("pageMaker", new Page(bs.getTotalRec(), cri)); //페이지 객체 만들어서 pageMaker에 담음
 			req.setAttribute("board", board); //페이지에 넘길때는 이렇게 넘김
 			goView(req, resp, "/board/boardList.jsp");
 		}else if(cmd.equals("boardDetail.bo")) {  //제목눌렀을때 같으면 이거 실행해라

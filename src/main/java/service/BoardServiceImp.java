@@ -18,6 +18,7 @@ import common.LoginImpl;
 import dao.BoardDao;
 import dto.AttachFile;
 import dto.Board;
+import dto.Criteria;
 
 
 
@@ -26,8 +27,8 @@ public class BoardServiceImp implements BoardService {
 	private static final String CHARSET = "utf-8";
 
 	@Override
-	public List<Board> list() {
-		return boardDao.boardList();
+	public List<Board> list(Criteria cri) {
+		return boardDao.boardList(cri);
 	}
 	
 	@Override
@@ -120,6 +121,12 @@ public class BoardServiceImp implements BoardService {
 		}
 		
 		return board;
+	}
+
+	@Override
+	public int getTotalRec() {
+		
+		return boardDao.getTotalRec();
 	}
 	
 

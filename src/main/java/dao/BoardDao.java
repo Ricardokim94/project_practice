@@ -10,6 +10,7 @@ import java.util.List;
 import common.OracleConn;
 import dto.AttachFile;
 import dto.Board;
+import dto.Criteria;
 import dto.Reply;
 import dto.Thumbnail;
 
@@ -17,24 +18,32 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			//DB컨넥션
 	private final Connection conn = OracleConn.getInstance().getConn();
 	
-	public List<Board> boardList() {
-		 
+	public List<Board> boardList(Criteria cri) {
 		List<Board>board = new ArrayList<Board>();
 		
-		String sql = "SELECT rownum, seqno, title, wdate, count, name";
+		String sql = "select rownum ,a.* from (";
+			   sql += " SELECT rownum as rn, seqno, title, wdate, count, name";
 	 		   sql += " FROM (";
 	 		   sql += " SELECT seqno,title,"; 
 			   sql += " TO_CHAR(b.wdate, 'yyyy\"년\"mm\"월\"dd\"일\" HH:MI:SS PM', 'nls_date_language=american') wdate,";
 			   sql += " count,name";
 			   sql += " FROM board b, member m";
-			   sql += " WHERE b.id = m.id order by wdate desc)";
-			   sql += " WHERE rownum between 1 and 10000";
+			   sql += " WHERE b.id = m.id)";
+			   sql += " WHERE rownum <= ?*? order by seqno desc ";
+			   sql += " )a where 1=1";
+			   sql += " and rn > (? -1)*?";
+			   
 		PreparedStatement stmt;
 		
 		try {
-			stmt = conn.prepareStatement(sql//ResultSet.TYPE_SCROLL_INSENSITIVE,
-											//ResultSet.CONCUR_UPDATABLE
+			stmt = conn.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,
+											ResultSet.CONCUR_UPDATABLE
 					);
+			stmt.setInt(1, cri.getCurrentPage());
+			stmt.setInt(2, cri.getRowPerPage());
+			stmt.setInt(3, cri.getCurrentPage());
+			stmt.setInt(4, cri.getRowPerPage());
+			
 			ResultSet rs = stmt.executeQuery();
 			
 			//rs.last();
@@ -297,6 +306,25 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			e.printStackTrace();
 		}		
 		
+	}
+
+
+	public int getTotalRec() {
+		int total =0;
+		
+		String sql="select count(*) as total from board ";
+		PreparedStatement stmt;
+		try {
+			stmt=conn.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery();
+			
+			rs.next();
+			total = rs.getInt("total");		
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+				
+		return total;
 	}
 	
 }

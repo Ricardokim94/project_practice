@@ -60,9 +60,28 @@
 					</c:forEach>
 				</tbody>
 			</table>
-
-			<div class="as">
-				<a href="#">◀</a> <a href="#">1</a> <a href="#">2</a> <a href="#">3</a> <a href="#">4</a> <a href="#">5</a> <a href="#">▶</a>
+	
+	
+			<p>총레코드개수 : ${pageMaker.total}</p>
+	
+			<p></p>
+			
+			<div class="pagination">
+				<c:if test="${pageMaker.prev }">
+				 <a href="boardList.bo?currentPage=${pageMaker.startPage-1}&rowPerPage=${pageMaker.cri.rowPerPage}">&laquo;</a>
+			  	</c:if>
+			  
+			  
+			  <c:forEach var="num" begin="${pageMaker.startPage }" end="${pageMaker.endPage }">
+			  	<a href="/boardList.bo?currentPage=${num}&rowPerPage=${pageMaker.cri.rowPerPage}"
+			  	 class="${pageMaker.cri.currentPage == num ? "active" : " " }">${num}</a>
+			  </c:forEach>
+			  
+			<!--    <a class="active" href="#">2</a>-->
+			 
+			  <c:if test="${pageMaker.next }">
+			  <a href="boardList.bo?currentPage=${pageMaker.endPage+1}&rowPerPage=${pageMaker.cri.rowPerPage}">&raquo;</a>
+			  </c:if>
 			</div>
 		</div>
 	</div>
