@@ -26,16 +26,36 @@
 				<div class="logo">
 					<i class="fa-solid fa-clipboard"></i> 
 					<a>게시판</a>
-					<c:if test="${loginUser != null}">
-						<input type="submit" value="등록">
-					</c:if>
 				</div>
 			</form>
-
-			<form method="post" action="/board/boardsearch.jsp">
-				<input type="text" name="key"> 
+			
+			<div class="search">
+			<form name="search" method="post" action="boardList.bo">
+				<input type="text" name="key" placeholder="제목을 입력하세요"> 
 				<input type="submit" value="검색">
+				<!-- 페이지당 레코드수 -->
+				<select name="rowPerPage" onchange="goAction()">
+					<c:forEach var="i" begin="5" end="40" step="5">
+					<option value="${i}"
+					<c:if test="${i == pageMaker.cri.rowPerPage}"> selected</c:if>
+					>${i}개씩</option>
+					</c:forEach>
+				</select>
 			</form>
+			</div>
+
+			<script>
+				function goAction(){
+					document.forms['search'].submit();
+				}
+			</script>
+
+
+
+
+			<c:if test="${loginUser != null}">
+				<input type="submit" value="등록">
+			</c:if>
 
 			<table class="c">
 				<thead>

@@ -3,6 +3,8 @@ package dto;
 public class Criteria {
 	private int currentPage;
 	private int rowPerPage;
+	private String search;
+	
 	
 	public Criteria() {
 		super();
@@ -15,6 +17,12 @@ public class Criteria {
 	
 
 	
+	public String getSearch() {
+		return search;
+	}
+	public void setSearch(String search) {
+		this.search = search;
+	}
 	public int getCurrentPage() {
 		return currentPage;
 	}
