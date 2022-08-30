@@ -11,7 +11,7 @@
 		var x = new XMLHttpRequest();
 		
 		//요청하는것(1번째는 방식 / 2번째는 url /3번째는 비동기식 요청)
-		x.open("get","/member/idsearch.jsp?id=" + id,true);
+		x.open("get","/idDoubleCheck.do?id=" + id , true);
 		x.send();
 
 		x.onreadystatechange = function(){ //상태를 수시로 감지하는 거임

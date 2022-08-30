@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +11,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+
 import common.OracleConn;
+import oracle.jdbc.OracleTypes;
 
 public class MemberDao {
 
@@ -82,6 +85,29 @@ public class MemberDao {
 		return rs;
 	}
 
+	public int selectByid(String id) {
+		CallableStatement stmt = null;
+		int rs = 0;
+		String sql ="call p_idDoubleCheck(?, ?)";
+		try {
+			stmt = conn.prepareCall(sql);
+			stmt.setNString(1, id);
+			stmt.registerOutParameter(2, OracleTypes.INTEGER);
+			stmt.executeQuery();
+			
+			rs = stmt.getInt(2);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return rs;
+	}
+
+	
+	
+	
+	
+	
 	//	private void resourceClose() {
 	//		//자원반납
 	//		try {

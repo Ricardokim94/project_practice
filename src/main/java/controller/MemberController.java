@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -77,7 +78,13 @@ public class MemberController extends HttpServlet {
 			mr.insert(req);
 			req.setAttribute("msg", "memberOk"); //메세지에 memberOk뜨게 하고
 			goView(req, resp, "/");				//서버에서 "/" 로 보냄
+		}else if(cmd.equals("idDoubleCheck.do")) {
+			String id = req.getParameter("id"); //아이디 더블체크하는것
+			int rs = mr.idDoubleCheck(id);
+			PrintWriter out = resp.getWriter();
+			out.print(rs);
 		}
+		
 		
 	}
 

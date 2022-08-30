@@ -11,4 +11,5 @@ public interface MemberService {
 
 	int insert(HttpServletRequest req);
 	
+	public int idDoubleCheck(String id);
 }
