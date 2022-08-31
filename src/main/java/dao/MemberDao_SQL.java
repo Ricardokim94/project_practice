@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import common.OracleConn;
 import oracle.jdbc.OracleTypes;
 
-public class MemberDao {
+public class MemberDao_SQL {
 
 	private final Connection conn = OracleConn.getInstance().getConn();
 	PreparedStatement stmt = null;
@@ -66,24 +66,17 @@ public class MemberDao {
 
 		String email = request.getParameter("eid") + "@" + request.getParameter("domain");
 		String intro = request.getParameter("intro");
-		
-		
-		//프로시저 만들기
-		CallableStatement stmt;
+		//sql문장 작성
+		Statement stmt;
 		int rs = 0;
 		try {
-			String sql = "call p_insertMember(?,?,?,?,?,?,?,?)";
-			stmt = conn.prepareCall(sql);
-			stmt.setString(1, id);
-			stmt.setString(2, pw);
-			stmt.setString(3, name);
-			stmt.setString(4, gender);
-			stmt.setString(5, hobby_str);
-			stmt.setString(6, email);
-			stmt.setString(7, intro);
-			stmt.registerOutParameter(8, OracleTypes.INTEGER);
-			stmt.executeUpdate();
-			rs = stmt.getInt(8);
+			stmt = conn.createStatement();
+			String sql = String.format("INSERT INTO member" +
+					"(id, pw, name, gender, hobby, email, intro)" +
+					" values('%s','%s','%s','%s','%s','%s','%s')",
+					id, pw, name, gender, hobby_str, email, intro);
+			System.out.println(sql);
+			rs = stmt.executeUpdate(sql);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
