@@ -7,7 +7,7 @@
 <html>
 <head>
 	<%@ include file="/common.jsp" %>
-	<title>!수달이홈페이지!</title>
+	<title>수달이홈페이지</title>
 	
 	<link rel ="stylesheet" href="/board/board.css">
 	<script src="/js/formCheck.js"></script>
