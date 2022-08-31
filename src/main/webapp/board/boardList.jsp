@@ -27,6 +27,9 @@
 					<i class="fa-solid fa-clipboard"></i> 
 					<a>게시판</a>
 				</div>
+				<c:if test="${loginUser != null}">
+				<input type="submit" value="등록">
+				</c:if>
 			</form>
 			
 			<div class="search">
@@ -53,9 +56,7 @@
 
 
 
-			<c:if test="${loginUser != null}">
-				<input type="submit" value="등록">
-			</c:if>
+		
 
 			<table class="c">
 				<thead>

@@ -20,6 +20,6 @@ public interface BoardService {
 
 	public int getTotalRec();
 
-		
+	public void delete(String seqno);
 	
 }

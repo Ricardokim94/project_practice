@@ -1,11 +1,14 @@
 package dao;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import common.OracleConn;
 import dto.AttachFile;
@@ -13,6 +16,7 @@ import dto.Board;
 import dto.Criteria;
 import dto.Reply;
 import dto.Thumbnail;
+import oracle.jdbc.OracleTypes;
 
 public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			//DB컨넥션
@@ -273,7 +277,6 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			attach_no =rs.getString(1);			
 			conn.commit();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -282,16 +285,15 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 
 	public void update(Board board, AttachFile attachFile) {
 		//보드 update
-		String sql="UPDATE board SET title=?, content=?, open=? WHERE seqno=?";
-		PreparedStatement stmt;
+		String sql="call p_updateBoard(?,?,?,?)";
+		CallableStatement stmt;
 		try {
-			stmt = conn.prepareStatement(sql);
+			stmt = conn.prepareCall(sql);
 			stmt.setString(1, board.getTitle());
 			stmt.setString(2, board.getContent());
 			stmt.setString(3, board.getOpen());
 			stmt.setString(4, board.getSeqno());
 			stmt.executeQuery();
-			
 			//첨부파일
 			if(attachFile != null) {				
 				String attach_no = insertAttachFile(board.getSeqno(), attachFile);				
@@ -325,6 +327,27 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 		}
 				
 		return total;
+	}
+
+	//게시물 삭제
+	public Map<String, String> deleteByNo(String seqno) {
+		Map<String, String> map = new HashMap<String, String>();
+		CallableStatement stmt;
+		String sql ="call p_deleteBaord(?,?,?,?)";
+		try {
+			stmt = conn.prepareCall(sql);
+			stmt.setString(1, seqno);
+			stmt.registerOutParameter(2, OracleTypes.VARCHAR);
+			stmt.registerOutParameter(3, OracleTypes.VARCHAR);
+			stmt.registerOutParameter(4, OracleTypes.VARCHAR);
+			stmt.executeQuery();
+			map.put("savefilename", stmt.getString(2));
+			map.put("filepath", stmt.getString(3));
+			map.put("thumb_filename", stmt.getString(4));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return map;
 	}
 	
 }

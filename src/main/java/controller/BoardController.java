@@ -79,6 +79,9 @@ public class BoardController extends HttpServlet {
 		}else if(cmd.equals("modify.bo")) {
 			req.setAttribute("seqno", bs.update(req, resp));
 			goView(req, resp, "boardDetail.bo"); 
+		}else if(cmd.equals("boardDelete.bo")) {
+			bs.delete(req.getParameter("seqno"));
+			goView(req, resp, "boardList.bo");
 		}
 	}
 	

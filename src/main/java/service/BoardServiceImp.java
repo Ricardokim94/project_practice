@@ -2,8 +2,9 @@ package service;
 
 
 
+import java.io.File;
 import java.util.List;
-
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -129,7 +130,30 @@ public class BoardServiceImp implements BoardService {
 		return boardDao.getTotalRec();
 	}
 	
-
+	@Override
+	public void delete(String seqno) {
+		Map<String, String> map = boardDao.deleteByNo(seqno);
+		
+		String savefilename = map.get("savefilename");
+		String filepath = map.get("filename");
+		String thumb_filename = map.get("thumb_filename");
+		
+		if(savefilename != null) { //첨부파일이 null이 아니면 삭제해라
+				//첨부파일삭제
+				File file = new File(filepath+savefilename);
+				if(file.exists()) {
+					file.delete();	
+				}
+				
+				//썸네일 삭제
+				if(thumb_filename != null) {
+					File thumb_file = new File(filepath + "thumbnail/" + thumb_filename);
+					if(thumb_file.exists()) {
+						thumb_file.delete();
+					}
+				}
+		}
+	}
 }
 
 

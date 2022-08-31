@@ -32,11 +32,21 @@
 		 	
 		 	<c:if test="${user.id eq board.id }">
 			 	<button class = "button1" style=float:right onclick="location.href='/boardDetail.bo?seqno=${board.seqno}&page=momdify'">수정</button>
-			 	<button class = "button1" style=float:right onclick="location.href='delete.jsp?no=${board.seqno}'">삭제</button>
+			 	<button class = "button1" style=float:right onclick="del_confirm('${board.seqno}')">삭제</button>
 		 	 </c:if>
+		 	 
+		 	 <script>
+		 	 	function del_confirm(seqno){
+		 	 		var rs = confirm('정말로 삭제하겠습니다?');
+		 	 		if(rs){
+		 	 			location.href="boardDelete.bo?seqno=" + seqno;
+		 	 		}
+		 	 	}
+		 	 </script>
+		 	 
 		 	  <hr>
 				 <div class = "cccc">	
-				 	★제목 : ${board.seqno}<hr>
+				 	★번호 : ${board.seqno}<hr>
 				 	★작성날짜 : ${board.wdate}<hr>
 				    ★작성자 : ${board.name}<hr>
 				    ★조회수 : ${board.count}<hr>
