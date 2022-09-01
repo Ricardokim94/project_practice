@@ -23,49 +23,34 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 	private final Connection conn = OracleConn.getInstance().getConn();
 	
 	public List<Board> boardList(Criteria cri) {
+		
+		CallableStatement stmt = null;
 		List<Board>board = new ArrayList<Board>();
 		
-		String sql = "select rownum ,a.* from (";
-			   sql += " SELECT rownum as rn, seqno, title, wdate, count, name";
-	 		   sql += " FROM (";
-	 		   sql += " SELECT seqno,title,"; 
-			   sql += " TO_CHAR(b.wdate, 'yyyy\"년\"mm\"월\"dd\"일\" HH:MI:SS PM', 'nls_date_language=american') wdate,";
-			   sql += " count,name";
-			   sql += " FROM board b, member m";
-			   sql += " WHERE b.id = m.id)";
-			   sql += " WHERE rownum <= ?*? order by seqno desc ";
-			   sql += " )a where 1=1";
-			   sql += " and rn > (? -1)*?";
-			   
-		PreparedStatement stmt;
+		String sql = "call p_getboardlist(?,?,?,?,?)";
 		
 		try {
-			stmt = conn.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,
-											ResultSet.CONCUR_UPDATABLE
-					);
+			stmt = conn.prepareCall(sql);
 			stmt.setInt(1, cri.getCurrentPage());
 			stmt.setInt(2, cri.getRowPerPage());
-			stmt.setInt(3, cri.getCurrentPage());
-			stmt.setInt(4, cri.getRowPerPage());
+			stmt.setString(3, "");
+			stmt.setString(4, "");
+			stmt.registerOutParameter(5, OracleTypes.CURSOR);
+			stmt.executeQuery();
 			
-			ResultSet rs = stmt.executeQuery();
+			ResultSet rs = (ResultSet)stmt.getObject(5);
 			
-			//rs.last();
 			
-			//rs.beforeFirst(); //커서를 맨위 헤더로 이동해야함!
-			//보드 담아야됨
-			
-			//int i=0;//배열에 넣어서(43열)증가 시켜야돼서 변수하나 선언
 			while(rs.next()) {
 				Board b =new Board(); //객체를 하나 만들어야됨!
 				
-				b.setNo(rs.getString("rownum")); //알리야스 준거로 해야됨!(13열) 테이블에 있는거 하면 안됨
+				b.setNo(rs.getString("rn")); 
 				b.setTitle(rs.getString("title"));
 				b.setWdate(rs.getString("wdate"));
 				b.setName(rs.getString("name"));
 				b.setCount(rs.getString("count"));
 				b.setSeqno(rs.getString("seqno"));
-				//board[i++] = b;
+
 				board.add(b);
 			}
 			
