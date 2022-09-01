@@ -17,7 +17,6 @@
 <%@ include file="/menu.jsp"%>
 
 
-
 <div class="row">
 	<div class="leftcolumn">
 		<div class="card">
@@ -38,11 +37,14 @@
 				<input type="hidden" name="currentPage" value="${pageMaker.cri.currentPage}" >
 			
 				<select name="search_field">
-					<option value="title">제목</option>
-					<option value="name">작성자</option>
+					<option value="title" 
+					<c:if test="${pageMaker.cri.searchField == 'title'}">selected</c:if>>제목</option>
+					<option value="name"
+					<c:if test="${pageMaker.cri.searchField == 'name'}">selected</c:if>>작성자</option>
 				</select>
 			
-				<input type="text" name="search_text" placeholder="Search..."> 
+				<input type="text" name="search_text" placeholder="Search..." 
+					value="${pageMaker.cri.searchText}"> 
 				<input type="button" value="검색" onclick="document.forms['search'].submit()">
 				<!-- 페이지당 레코드수 -->
 				<select name="rowPerPage" onchange="goAction()">
@@ -61,11 +63,6 @@
 				}
 			</script>
 
-
-
-
-		
-
 			<table class="c">
 				<thead>
 					<tr>
@@ -79,17 +76,16 @@
 
 				<tbody>
 					<c:forEach items="${board}" var="board">
-						<tr>
-							<th>${board.getNo()}</th>
-							<th><a href="boardDetail.bo?seqno=${ board.getSeqno()}">${board.getTitle()}</a></th>
-							<th>${board.getWdate()}</th>
-							<th>${board.getCount()}</th>
-							<th>${board.getName()}</th>
+						<tr style= "cursor : pointer" onclick="location.href='boardDetail.bo?seqno=${ board.getSeqno()}'">
+							<th>${board.no}</th>
+							<th>${board.title}</th>
+							<th>${board.wdate}</th>
+							<th>${board.count}</th>
+							<th>${board.name}</th>
 						</tr>
 					</c:forEach>
 				</tbody>
 			</table>
-	
 	
 			<p>총레코드개수 : ${pageMaker.total}</p>
 	
@@ -99,7 +95,6 @@
 				<c:if test="${pageMaker.prev }">
 				 <a href="boardList.bo?currentPage=${pageMaker.startPage-1}&rowPerPage=${pageMaker.cri.rowPerPage}">&laquo;</a>
 			  	</c:if>
-			  
 			  
 			  <c:forEach var="num" begin="${pageMaker.startPage }" end="${pageMaker.endPage }">
 			  	<a href="/boardList.bo?currentPage=${num}&rowPerPage=${pageMaker.cri.rowPerPage}"
