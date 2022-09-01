@@ -32,10 +32,18 @@
 				</c:if>
 			</form>
 			
+			<!-- 검색하는 부분 -->
 			<div class="search">
 			<form name="search" method="post" action="boardList.bo">
-				<input type="text" name="key" placeholder="제목을 입력하세요"> 
-				<input type="submit" value="검색">
+				<input type="hidden" name="currentPage" value="${pageMaker.cri.currentPage}" >
+			
+				<select name="search_field">
+					<option value="title">제목</option>
+					<option value="name">작성자</option>
+				</select>
+			
+				<input type="text" name="search_text" placeholder="Search..."> 
+				<input type="button" value="검색" onclick="document.forms['search'].submit()">
 				<!-- 페이지당 레코드수 -->
 				<select name="rowPerPage" onchange="goAction()">
 					<c:forEach var="i" begin="5" end="40" step="5">

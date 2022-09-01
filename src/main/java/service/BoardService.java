@@ -18,7 +18,7 @@ public interface BoardService {
 	
 	public String update(HttpServletRequest req, HttpServletResponse resp);
 
-	public int getTotalRec();
+	public int getTotalRec(Criteria criteria);
 
 	public void delete(String seqno);
 	

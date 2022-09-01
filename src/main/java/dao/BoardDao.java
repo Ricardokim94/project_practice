@@ -27,14 +27,29 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 		CallableStatement stmt = null;
 		List<Board>board = new ArrayList<Board>();
 		
+			
+			String search_title = null;
+			String search_name = null;
+			
+			//제목검색
+			if(cri.getSearchField() != null && cri.getSearchField().equals("title")) {
+				search_title = cri.getSearchText();
+			}
+			
+			//이름검색
+			if(cri.getSearchField() != null && cri.getSearchField().equals("name")) {
+				search_name = cri.getSearchText();
+			}
+
+			
 		String sql = "call p_getboardlist(?,?,?,?,?)";
 		
 		try {
 			stmt = conn.prepareCall(sql);
 			stmt.setInt(1, cri.getCurrentPage());
 			stmt.setInt(2, cri.getRowPerPage());
-			stmt.setString(3, "");
-			stmt.setString(4, "");
+			stmt.setString(3, search_name);
+			stmt.setString(4, search_title);
 			stmt.registerOutParameter(5, OracleTypes.CURSOR);
 			stmt.executeQuery();
 			
@@ -296,17 +311,33 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 	}
 
 
-	public int getTotalRec() {
+	public int getTotalRec(Criteria cri) {
 		int total =0;
+		String search_title = null;
+		String search_name = null;
 		
-		String sql="select count(*) as total from board ";
-		PreparedStatement stmt;
+		//제목검색
+		if(cri.getSearchField() != null && cri.getSearchField().equals("title")) {
+			search_title = cri.getSearchText();
+		}
+		
+		//이름검색
+		if(cri.getSearchField() != null && cri.getSearchField().equals("name")) {
+			search_name = cri.getSearchText();
+		}
+		
+		
+		String sql="call p_getboardtotal(?,?,?)";
+		CallableStatement stmt = null;
+		
 		try {
-			stmt=conn.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery();
+			stmt=conn.prepareCall(sql);
+			stmt.setString(1, search_name);
+			stmt.setString(2, search_title);
+			stmt.registerOutParameter(3, OracleTypes.INTEGER);
+			stmt.executeQuery();
 			
-			rs.next();
-			total = rs.getInt("total");		
+			total = stmt.getInt(3);		//총레코드 갯수를 여기에 저장하고 이걸리턴하면된다.
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -125,9 +125,9 @@ public class BoardServiceImp implements BoardService {
 	}
 
 	@Override
-	public int getTotalRec() {
+	public int getTotalRec(Criteria criteria) {
 		
-		return boardDao.getTotalRec();
+		return boardDao.getTotalRec(criteria);
 	}
 	
 	@Override
