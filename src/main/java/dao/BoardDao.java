@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Array;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +17,12 @@ import dto.Board;
 import dto.Criteria;
 import dto.Reply;
 import dto.Thumbnail;
+import oracle.jdbc.OracleType;
 import oracle.jdbc.OracleTypes;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.STRUCT;
+import oracle.sql.StructDescriptor;
 
 public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			//DB컨넥션
@@ -77,158 +83,114 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 
 	
 	public Board boardDetail(String seqno) {
-		
 		Board board = new Board();//보드를 try밖에다 해줘야함 안에다 하면 return 할때 모름
 
 		try {
 			//조회수 카운트
-			String sql = "update board set count = count+1 where seqno = " + seqno;
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.executeUpdate();
+			String sql = "call p_board_detail(?,?,?,?)";  
+				//???? =>1번째 seqno /2번째 board /3번째 reply /4번째 attach
+			CallableStatement stmt = conn.prepareCall(sql);
+			stmt.setInt(1, Integer.parseInt(seqno));
+			stmt.registerOutParameter(2, OracleTypes.CURSOR);
+			stmt.registerOutParameter(3, OracleTypes.CURSOR);
+			stmt.registerOutParameter(4, OracleTypes.CURSOR);
+			stmt.executeQuery();
 
-			//해당 게시물 세부내용 조회
-			   sql = "select title , b.content content, b.id, b.open, ";
-			   sql+= " 			TO_CHAR(b.wdate, 'yyyy\\\"년\\\"mm\\\"월\\\"dd\\\"일(\\\"DY\\\")\\\" HH:MI:SS PM') wdate,";
-			   sql+= " 			count,(select name from member m where m.id = b.id) name";
-			   sql+= " from board b";
-			   sql+= " where b.seqno=?";
-			   sql+= " union all";
-			   sql+= " select '', content, r.id,'', ";
-			   sql+= " 			TO_CHAR(r.wdate, 'yyyy\\\"년\\\"mm\\\"월\\\"dd\\\"일(\\\"DY\\\")\\\" HH:MI:SS PM'),";
-			   sql+= " 			0, (select name from member m where m.id = r.id)";
-			   sql+= " from reply r";
-			   sql+= " where r.board_seqno = ?";
-				
-			   stmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, 
-						  ResultSet.CONCUR_UPDATABLE);
-			   stmt.setString(1, seqno);
-			   stmt.setString(2, seqno);
-			   ResultSet rs = stmt.executeQuery(); //rs이제 결과를 보드로 담아야됨
+			ResultSet rs = (ResultSet)stmt.getObject(2);			
+	   		rs.next(); 
+	   		board.setSeqno(seqno);
+	    	board.setTitle(rs.getString("title"));
+	   		board.setContent(rs.getString("content"));
+	   		board.setId(rs.getString("id"));
+	   		board.setWdate(rs.getString("wdate"));
+	   		board.setCount(rs.getString("count"));
+	   		board.setName(rs.getString("name"));
+	   		board.setOpen(rs.getString("open"));
+	   		
+	   		
+	   		List<Reply> re = new ArrayList<Reply>();
+	   		
+	   		rs = (ResultSet)stmt.getObject(3);
+   			while(rs.next()) {
+	   			Reply reply = new Reply();
+	   			reply.setId(rs.getString("id"));
+	   			reply.setComment(rs.getString("content"));
+	   			reply.setWdate(rs.getString("wdate"));
+	   			reply.setName(rs.getString("name"));
+	   			re.add(reply);
+   			}
+   			board.setReply(re);		//마지막이 re니까 이걸 보드에 담으면 됨
+   			
+		   
+   			//첨부파일 저장
+			List<AttachFile> fileList = new ArrayList<AttachFile>();
+					
+			rs = (ResultSet)stmt.getObject(4);
+			while(rs.next()) {
+				AttachFile attachfile = new AttachFile();
+				attachfile.setNo(rs.getString("no"));
+				attachfile.setFileName(rs.getString("filename"));
+				attachfile.setSaveFileName(rs.getString("savefilename"));
+				attachfile.setFileSize(rs.getString("filesize"));
+				attachfile.setFiletype(rs.getString("filetype"));
+				attachfile.setFilePath(rs.getNString("filepath"));				
+				System.out.println(attachfile.getFileName());
+			//썸네일 담아서 attach파일에 set하고 ->	fileList에 담음
+				Thumbnail th = new Thumbnail();	
+				th.setFileName(rs.getString("thumb_name"));
+				th.setFileSize(rs.getString("thumb_size"));
+				th.setFilePath(rs.getString("thumb_path"));
+				attachfile.setThumbnail(th);
 			
-			   		rs.next(); 
-			   
-			    	board.setTitle(rs.getString("title"));
-			   		board.setContent(rs.getString("content"));
-			   		board.setId(rs.getString("id"));
-			   		board.setWdate(rs.getString("wdate"));
-			   		board.setCount(rs.getString("count"));
-			   		board.setName(rs.getString("name"));
-			   		board.setOpen(rs.getString("open"));
-			   		board.setSeqno(seqno);
-			   		
-			   		//rs.last();
-			   		//Reply[] re = new Reply[rs.getRow()-1]; //마지막행번호를 re에 담음
-			   		List<Reply> re = new ArrayList<Reply>();
-			   		//rs.beforeFirst(); //첫번째로가라다시
-//			   		rs.next();
-			   			while(rs.next()) {
-				   			Reply reply = new Reply();
-				   			reply.setId(rs.getString("id"));
-				   			reply.setComment(rs.getString("content"));
-				   			reply.setWdate(rs.getString("wdate"));
-				   			reply.setName(rs.getString("name"));
-				   			re.add(reply);
-				   			//re[i] = reply;
-			   			}
-//			   		for(int i=0; i<re.length; i++) {
-//			   			rs.next();
-//			   			re[i].setId(rs.getString("id"));
-//			   			re[i].setComment(rs.getString("content"));
-//			   			re[i].setWdate(rs.getString("wdate"));
-//			   		}
-
-			   			board.setReply(re);		//마지막이 re니까 이걸 보드에 담으면 됨
-			   			
-			   
-			   	//첨부파일 저장
-	   			sql = "SELECT * FROM attachfile where board_seq = ?";
-				stmt = conn.prepareStatement(sql);
-				stmt.setString(1, seqno);			
-				rs = stmt.executeQuery();
-						
-				List<AttachFile> fileList = new ArrayList<AttachFile>();
-					
-				while(rs.next()) {
-					AttachFile attachfile = new AttachFile();
-					attachfile.setNo(rs.getString("no"));
-					attachfile.setFileName(rs.getString("filename"));
-					attachfile.setSaveFileName(rs.getString("savefilename"));
-					attachfile.setFileSize(rs.getString("filesize"));
-					attachfile.setFiletype(rs.getString("filetype"));
-					attachfile.setFilePath(rs.getNString("filepath"));				
-					
-					if(rs.getString("filetype").contains("image")) {				
-						sql = "SELECT * FROM attachfile_thumb WHERE attach_no = ? ";
-						stmt = conn.prepareStatement(sql);
-						stmt.setString(1, rs.getString("no"));			
-						ResultSet rs2 = stmt.executeQuery();
-						
-						while(rs2.next()) {
-							Thumbnail th = new Thumbnail();	
-							th.setNo(rs2.getString("no"));
-							th.setFileName(rs2.getString("filename"));
-							th.setFileSize(rs2.getString("filesize"));
-							th.setFilePath(rs2.getString("filepath"));
-							attachfile.setThumbnail(th);
-						}
-					}
-					fileList.add(attachfile);
-				}
-				
+				fileList.add(attachfile);
+			}
 				board.setAttachfile(fileList);
 			   			
 		} catch (SQLException e) {
 				e.printStackTrace();
 		}
 		return board;
+		//이것들을 다 board에 담아서 리턴하고 있음
 	}
 
 	
-	public String insert(Board board, AttachFile attachFile) {
+	public String insert(Board board, AttachFile attach) {
 		
-		String sql = "insert into board(seqno, title, content, open, id) values (board_seq.nextval,?,?,?,?)";
-		PreparedStatement stmt;
-		
-		String seqno = null;
+		CallableStatement stmt;
+		String seqno = null; //seqno 넘김
 		
 		   try {
-			   //false를 주면 자동으로 commit이 안된다.
-			  
-			   conn.setAutoCommit(false);
+			   String sql = "call p_insert_board(?,?,?)";
+			   stmt = conn.prepareCall(sql);
 			   
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, board.getTitle());
-			stmt.setString(2, board.getContent());
-			stmt.setString(3, board.getOpen());
-			stmt.setString(4, board.getId());
-			stmt.executeQuery();
-			
-			//보드 시퀀스넘버 가져오는 것
-			sql = "select max(seqno) as seqno from board";
-			stmt = conn.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery();
-			rs.next();
-			seqno = rs.getString("seqno");
-			
+			   StructDescriptor st_board = StructDescriptor.createDescriptor("OBJ_BOARD" ,conn); //타입정의한것,오라클연결
+			   Object[] obj_board = {board.getTitle(), board.getContent(), board.getOpen(), board.getId() };
+			   STRUCT board_rec = new STRUCT(st_board, conn, obj_board);
+			   
+			   stmt.setObject(1, board_rec);
+			   
+			   
 			//첨부파일
-			if(attachFile != null) {
+			if(attach != null) {
+				// --중첩테이블이니까 array가 필요함
+				StructDescriptor st_attach = StructDescriptor.createDescriptor("OBJ_ATTACH",conn);
+				Object[] obj = {attach.getFileName(), attach.getSaveFileName(), 
+								attach.getFileSize(), attach.getFiletype(), attach.getFilePath(),
+								attach.getThumbnail().getFileName(), attach.getThumbnail().getFileSize(),attach.getThumbnail().getFilePath()};
+				STRUCT[] attach_rec = new STRUCT[3];
+					//여러개가 들어오니까 배열로 해줘야함
+				attach_rec[0] = new STRUCT(st_attach, conn, attach_rec);
 				
-				String attach_no = insertAttachFile(seqno, attachFile);				
-				String fileType = attachFile.getFiletype();				
 				
-				//썸네일
-				if(fileType.substring(0, fileType.indexOf("/")).equals("image")) {
-					insertThumbNail(attach_no, attachFile);
-				}
+				ArrayDescriptor desc = ArrayDescriptor.createDescriptor("ATTACH_NT", conn);
+				ARRAY attach_arr = new ARRAY(desc, conn, attach);
+					
+				stmt.setObject(2, attach_arr);
+			
 			}
-			conn.commit();
-			conn.setAutoCommit(true);
+			stmt.registerOutParameter(3, OracleType.VARCHAR2);
+			
 		} catch (Exception e) {						
-			try {
-				conn.rollback();
-			} catch (SQLException e1) {				
-				System.out.println("rollback처리됨");
-			}
 			e.printStackTrace();
 		}
 		
