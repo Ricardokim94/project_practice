@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import common.OracleConn;
 import oracle.jdbc.OracleTypes;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.STRUCT;
+import oracle.sql.StructDescriptor;
 
 public class MemberDao {
 
@@ -55,15 +58,7 @@ public class MemberDao {
 		String gender = request.getParameter("gender");
 
 		String hobby[] = request.getParameterValues("hobby");
-		String hobby_str = new String();
-		for(int i=0; i < hobby.length; i++){
-			hobby_str += hobby[i];
-			if(i != hobby.length-1){
-				break;
-			}
-			hobby_str += ",";
-		}
-
+		
 		String email = request.getParameter("eid") + "@" + request.getParameter("domain");
 		String intro = request.getParameter("intro");
 		
@@ -72,18 +67,20 @@ public class MemberDao {
 		CallableStatement stmt;
 		int rs = 0;
 		try {
-			String sql = "call p_insertMember(?,?,?,?,?,?,?,?)";
+			String sql = "call p_insert_Member(?,?,?)";
 			stmt = conn.prepareCall(sql);
-			stmt.setString(1, id);
-			stmt.setString(2, pw);
-			stmt.setString(3, name);
-			stmt.setString(4, gender);
-			stmt.setString(5, hobby_str);
-			stmt.setString(6, email);
-			stmt.setString(7, intro);
-			stmt.registerOutParameter(8, OracleTypes.INTEGER);
+			//오브젝트로 바꿔서 넘기기
+			StructDescriptor st_desc = StructDescriptor.createDescriptor("OBJ_MEMBER", conn);
+			Object[] obj_member = {id, pw, name, gender, email, intro }; //하나의 레코드지만 object배열로 선언을 해줘야 된다! 주의!
+			STRUCT member_rec = new STRUCT(st_desc, conn, obj_member); //OBJ_MEMBER를  obj_member 에 담기위해서
+			stmt.setObject(1, member_rec);
+			
+			ArrayDescriptor desc = ArrayDescriptor.createDescriptor("STRING_NT", conn);
+			ARRAY hobby_arr = new ARRAY(desc, conn, hobby); //오라클타입 + 자바문자열로들어있는체 를 변환해주는 역활을 한다. = 바인딩 한다(타입을)
+			stmt.setArray(2, hobby_arr); //set ARRAY!!주의 setSting 아님!
+			stmt.registerOutParameter(3, OracleTypes.INTEGER);
 			stmt.executeUpdate();
-			rs = stmt.getInt(8);
+			rs = stmt.getInt(3);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
