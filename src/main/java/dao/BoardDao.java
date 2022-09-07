@@ -169,27 +169,33 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			   
 			   stmt.setObject(1, board_rec);
 			   
+			   ArrayDescriptor desc = ArrayDescriptor.createDescriptor("ATTACH_NT", conn);		//중복이라 타입은 위로 올림
+			   ARRAY attach_arr = null;															//중복이라 위로 올림
 			   
 			//첨부파일
 			if(attach != null) {
 				// --중첩테이블이니까 array가 필요함
+				
 				StructDescriptor st_attach = StructDescriptor.createDescriptor("OBJ_ATTACH",conn);
-				Object[] obj = {attach.getFileName(), attach.getSaveFileName(), 
-								attach.getFileSize(), attach.getFiletype(), attach.getFilePath(),
-								attach.getThumbnail().getFileName(), attach.getThumbnail().getFileSize(),attach.getThumbnail().getFilePath()};
-				STRUCT[] attach_rec = new STRUCT[3];
+				
+				Object[] obj_attach = {attach.getFileName(), attach.getSaveFileName(), 
+										attach.getFileSize(), attach.getFiletype(), attach.getFilePath(),
+										attach.getThumbnail().getFileName(), attach.getThumbnail().getFileSize(),attach.getThumbnail().getFilePath()};
+				STRUCT[] attach_rec = new STRUCT[1];
 					//여러개가 들어오니까 배열로 해줘야함
-				attach_rec[0] = new STRUCT(st_attach, conn, attach_rec);
+				attach_rec[0] = new STRUCT(st_attach, conn, obj_attach);
 				
-				
-				ArrayDescriptor desc = ArrayDescriptor.createDescriptor("ATTACH_NT", conn);
-				ARRAY attach_arr = new ARRAY(desc, conn, attach);
-					
-				stmt.setObject(2, attach_arr);
-			
+				attach_arr = new ARRAY(desc, conn, attach_rec);
 			}
-			stmt.registerOutParameter(3, OracleType.VARCHAR2);
+			else { //attach가 없어도 setting을 해줘야함
+				attach_arr = new ARRAY(desc, conn, null);
+			}			
+			stmt.setArray(2, attach_arr);
 			
+			stmt.registerOutParameter(3, OracleType.VARCHAR2);
+			stmt.executeQuery();
+			
+			seqno = stmt.getString(3);
 		} catch (Exception e) {						
 			e.printStackTrace();
 		}

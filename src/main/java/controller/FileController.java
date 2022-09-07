@@ -51,7 +51,6 @@ public class FileController extends HttpServlet {
 				//System.out.println("filepaht: " + filepath + ",thumb_filename:" + thumb_filename);
 				int rs = fileService.delete(no, savefilename, filepath, thumb_filename);
 			
-				System.out.println("파일삭제결과:" + rs);
 				
 				PrintWriter out;
 				try {
