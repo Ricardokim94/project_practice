@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -12,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import dto.Member;
+import service.MemberService;
 import service.MemberServiceImp;
 
 @WebServlet(urlPatterns = {"*.do"})
@@ -83,6 +86,8 @@ public class MemberController extends HttpServlet {
 			int rs = mr.idDoubleCheck(id);
 			PrintWriter out = resp.getWriter();
 			out.print(rs);
+		}else if(cmd.equals("list.do")) {
+			List<Member> member = mr.list();
 		}
 		
 		

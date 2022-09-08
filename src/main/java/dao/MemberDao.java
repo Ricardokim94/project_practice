@@ -1,17 +1,23 @@
 package dao;
 
+import java.sql.Array;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 
 import common.OracleConn;
+import dto.Member;
+import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleTypes;
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
@@ -105,6 +111,55 @@ public class MemberDao {
 		}
 
 		return rs;
+	}
+
+	public List<Member> getMember() {
+		CallableStatement stmt = null;
+		
+		List<Member> member = new ArrayList<Member>();
+		
+		String sql = "call p_get_member(?)";
+		
+		try {
+			stmt = conn.prepareCall(sql);
+			stmt.registerOutParameter(1, OracleTypes.CURSOR);
+			stmt.executeQuery();
+			
+     		ResultSet rs = (ResultSet)stmt.getObject(1);
+     		while(rs.next()){
+     			Member m = new Member();
+     			m.setId(rs.getString("id"));
+     			m.setName(rs.getString("name"));
+     			m.setGender(rs.getString("gender"));
+     			m.setWdate(rs.getString("wdate"));
+     			//취미
+     			if(rs.getArray("hobby_nm") != null) {
+     				//컬렉션 중첩테이블 데이터 가져오기
+     				ARRAY h_arr = ((OracleResultSet)rs).getARRAY("hobby_nm");
+     				System.out.println("취미 타입 :" + h_arr.getSQLTypeName());
+     				System.out.println("취미 타입 코드 :" + h_arr.getBaseType());
+     				System.out.println("취미 갯수 :" + h_arr.length());
+     				
+     				String[] h_val = (String[])h_arr.getArray();
+     				for(int i=0; i< h_val.length; i++) {
+     					String hobby_str = h_val[i];
+     					System.out.println(">>>취미["+i+"]=" + hobby_str);
+     				}
+     				
+     				
+     				m.setHobby(Arrays.toString(h_val));
+     				
+     			}
+     			
+     			member.add(m);
+     		}
+     		
+     		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return member;
 	}
 
 	

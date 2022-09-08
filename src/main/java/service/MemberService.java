@@ -1,8 +1,11 @@
 package service;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import dto.Member;
 
 public interface MemberService {
 
@@ -12,4 +15,8 @@ public interface MemberService {
 	int insert(HttpServletRequest req);
 	
 	public int idDoubleCheck(String id);
+
+	public List<Member> list();
+	
+	
 }

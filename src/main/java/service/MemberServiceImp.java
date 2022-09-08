@@ -1,10 +1,12 @@
 package service;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.*;
 
 import dao.MemberDao;
+import dto.Member;
 
 
 public class MemberServiceImp implements MemberService {
@@ -25,5 +27,11 @@ public class MemberServiceImp implements MemberService {
 	public int idDoubleCheck(String id) {
 		return mdo.selectByid(id);
 	}
+
+	@Override
+	public List<Member> list() {
+		return mdo.getMember();
+	}
+	
 
 }
