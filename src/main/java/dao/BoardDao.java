@@ -174,13 +174,25 @@ public class BoardDao {  //데이터를 입출력하는 객체다 : Dao
 			   
 			//첨부파일
 			if(attach != null) {
-				// --중첩테이블이니까 array가 필요함
+				
+				StructDescriptor st_thumb = StructDescriptor.createDescriptor("OBJ_ATTACH_THUMB",conn);
+					STRUCT attach_thumb_rec = null;
+					Object[] obj_thumb = null;
+				
+				if(attach.getThumbnail() != null) { //썸네일이 있으면 담아서 189행에 obj_thumb담아라!
+				
+					obj_thumb = new Object[]{ attach.getThumbnail().getFileName(), 
+										      attach.getThumbnail().getFileSize(),
+										      attach.getThumbnail().getFilePath()};
+					
+				}
+					attach_thumb_rec = new STRUCT(st_thumb, conn, obj_thumb);
 				
 				StructDescriptor st_attach = StructDescriptor.createDescriptor("OBJ_ATTACH",conn);
 				
 				Object[] obj_attach = {attach.getFileName(), attach.getSaveFileName(), 
 										attach.getFileSize(), attach.getFiletype(), attach.getFilePath(),
-										attach.getThumbnail().getFileName(), attach.getThumbnail().getFileSize(),attach.getThumbnail().getFilePath()};
+										attach_thumb_rec};
 				STRUCT[] attach_rec = new STRUCT[1];
 					//여러개가 들어오니까 배열로 해줘야함
 				attach_rec[0] = new STRUCT(st_attach, conn, obj_attach);
