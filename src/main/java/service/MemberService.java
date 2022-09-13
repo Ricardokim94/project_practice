@@ -18,5 +18,4 @@ public interface MemberService {
 
 	public List<Member> list();
 	
-	
 }
